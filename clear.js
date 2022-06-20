@@ -10,7 +10,9 @@ files.forEach((file) => {
   if (fs.existsSync(tempFile)) {
     fs.unlink(tempFile, (err) => {
       if (err) throw err;
-      console.log(tempFile + "was deleted");
+      console.log(tempFile + " was deleted");
     });
+  } else {
+    console.log(tempFile + " not exists");
   }
 });

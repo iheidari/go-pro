@@ -3,7 +3,7 @@ const fs = require("fs");
 const getJsonData = (file) => {
   const rawdata = fs.readFileSync(file);
   const data = JSON.parse(rawdata);
-  media = data._embedded.media;
+  media = data;
   if (media.length) {
     return media.map((item) => ({
       birthtime: new Date(item.captured_at),
@@ -15,18 +15,7 @@ const getJsonData = (file) => {
 };
 
 const getAll = () => {
-  const result = [];
-  const _FILES = [
-    "./data/1.json",
-    "./data/2.json",
-    "./data/3.json",
-    "./data/4.json",
-    "./data/5.json",
-    "./data/6.json",
-  ];
-  _FILES.forEach((file) => {
-    result.push(...getJsonData(file));
-  });
+  const result = getJsonData("./data/full.json");
   return result;
 };
 
