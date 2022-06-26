@@ -3,9 +3,8 @@ const fs = require("fs");
 const getJsonData = (file) => {
   const rawdata = fs.readFileSync(file);
   const data = JSON.parse(rawdata);
-  media = data;
-  if (media.length) {
-    return media.map((item) => ({
+  if (data.length) {
+    return data.map((item) => ({
       birthtime: new Date(item.captured_at),
       name: item.filename,
       size: item.file_size,
