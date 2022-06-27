@@ -3,7 +3,7 @@ const fs = require("fs");
 const { getAllFiles } = require("./util/file");
 const { getAll } = require("./util/dataHelper");
 
-const allFiles = getAllFiles("F:\\gopro\\others");
+const allFiles = getAllFiles("F:\\gopro");
 // const allFiles = getAllFiles(__dirname + "\\files");
 console.log("🚀 all files: ", allFiles.length);
 
