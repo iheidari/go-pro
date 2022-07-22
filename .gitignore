@@ -1,5 +1,8 @@
 .env
 node_modules
-files
+files/**.MP4
+out/**.ts
+out/**.MP4
+
 **.log
 data
