@@ -1,35 +1,24 @@
 const util = require("util");
 const { execSync } = require("child_process");
 const exec = util.promisify(require("child_process").exec);
-
-// const _FILES = [
-//   "GH010351",
-//   "GH010352",
-//   "GH010353",
-//   "GH010354",
-//   "GH010355",
-//   "GH010356",
-//   "GH010357",
-// ];
-
-const _INPUT_FOLDER = "./files/";
-const _OUTPUT_FOLDER = "./out/";
-const _FINAL_RESULT = _OUTPUT_FOLDER + "final.mp4";
+const fs = require("fs");
 
 const CONSOLE_RESET = "\x1b[0m";
 const CONSOLE_YELLOW = "\x1b[33m";
+const _TEMP_FOLDER = "./temp";
 
-const concat = async (inputFiles, outputFile) => {
+const concat = async (inputFiles, outputFolder = "./temp") => {
   console.time("whole process");
   console.time("convert");
   console.log(
     "converting started. It is a paralel process for all files and can take up to few minutes."
   );
+  if (!fs.existsSync(_TEMP_FOLDER)) {
+    fs.mkdirSync(_TEMP_FOLDER);
+  }
   const convertPromeses = inputFiles.map((file, index) =>
     exec(
-      `ffmpeg -i ${
-        _INPUT_FOLDER + file
-      } -c copy -bsf:v h264_mp4toannexb -f mpegts file_${index}.ts`
+      `ffmpeg -i ${file} -c copy -bsf:v h264_mp4toannexb -f mpegts ${_TEMP_FOLDER}/file_${index}`
     )
   );
 
@@ -40,19 +29,25 @@ const concat = async (inputFiles, outputFile) => {
   console.log(CONSOLE_RESET, "");
 
   console.time("concat");
-  const filesList = inputFiles
-    .map((file) => _OUTPUT_FOLDER + file + ".ts")
-    .join("|");
-  const command = `ffmpeg -i "concat:${filesList}" -c copy -bsf:a aac_adtstoasc ${_FINAL_RESULT}`;
-  console.log(
-    "🚀 ~ file: video-concat.js ~ line 34 ~ concat ~ command",
-    command
+  const filesList = Array.from(Array(inputFiles.length).keys()).map(
+    (i) => `${_TEMP_FOLDER}/file_${i}`
   );
+  const outputFile = new Date().toISOString().substring(0, 19);
+  const command = `ffmpeg -i "concat:${filesList.join(
+    "|"
+  )}" -c copy -bsf:a aac_adtstoasc ${outputFolder}/${outputFile}.MP4`;
+  console.log("🚀 concat command:   ", command);
   execSync(command);
+
+  //delete temporary files
+  filesList.forEach((file) => {
+    fs.unlinkSync(file);
+  });
+
   console.log(CONSOLE_YELLOW, "");
   console.timeEnd("concat");
   console.timeEnd("whole process");
   console.log(CONSOLE_RESET, "");
 };
 
-export default concat;
+module.exports = concat;
