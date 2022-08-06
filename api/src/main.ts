@@ -3,6 +3,7 @@ import { FileModule } from './modules/file/file.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(FileModule);
-  await app.listen(3000);
+  app.enableCors();
+  await app.listen(3001);
 }
 bootstrap();

@@ -10,7 +10,11 @@ export type File = {
   size: number;
 };
 
-const getFileInfo = (file: string, extensionFilter: string): File | null => {
+const getFileInfo = (
+  file: string,
+  dirPath: string,
+  extensionFilter?: string,
+): File | null => {
   const extension = path.extname(file);
   if (
     extensionFilter &&
@@ -23,7 +27,7 @@ const getFileInfo = (file: string, extensionFilter: string): File | null => {
 
   const { birthtimeMs, size } = fs.statSync(file);
   return {
-    file: file,
+    file: file.replace(dirPath, '').replace(/\\\\/g, '\\'),
     path: filePath,
     extension,
     name: basename,
@@ -36,17 +40,23 @@ export const getAllFiles = (
   dirPath: string,
   extension: string,
   arrayOfFiles?: File[],
+  originalPath?: string,
 ) => {
   const filesAndDirectories = fs.readdirSync(dirPath);
 
   arrayOfFiles = arrayOfFiles || [];
 
   filesAndDirectories.forEach((fnd) => {
-    if (fs.statSync(dirPath + '/' + fnd).isDirectory()) {
-      arrayOfFiles = getAllFiles(dirPath + '/' + fnd, extension, arrayOfFiles);
+    if (fs.statSync(dirPath + '\\' + fnd).isDirectory()) {
+      arrayOfFiles = getAllFiles(
+        dirPath + '\\' + fnd,
+        extension,
+        arrayOfFiles,
+        originalPath || dirPath,
+      );
     } else {
-      const file = path.join(dirPath, '/', fnd);
-      const result = getFileInfo(file, extension);
+      const file = path.join(dirPath, '\\', fnd);
+      const result = getFileInfo(file, originalPath || dirPath, extension);
       if (result) {
         arrayOfFiles.push(result);
       }
