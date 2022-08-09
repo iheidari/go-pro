@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api";
+import FileRow from "./FileRow";
 
 export type File = {
   file: string;
@@ -11,30 +12,16 @@ export type File = {
 };
 
 interface FileListProps {
-  path: string;
+  path?: string;
+  onPreview: (file: string) => void;
 }
-const FileRow = ({ file }: { file: File }) => {
-  return (
-    <div className="grid gap-4 grid-cols-4">
-      <div>
-        <a href={`http://localhost:3001${file.file.replace(/\\/g, "/")}`}>
-          {file.name}
-        </a>
-      </div>
-      <div>{file.size}</div>
-      <div>{file.birthtime.toString()}</div>
-    </div>
-  );
-};
 
-const Files = ({ path }: FileListProps) => {
+const Files = ({ path, onPreview }: FileListProps) => {
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
     const fetchList = async (path: string) => {
-      console.log("🚀 ~ file: Files.tsx ~ line 24 ~ fetchList ~ path", path);
       const response = await api.get(`http://localhost:3001/file?path=${path}`);
-      console.log("🚀 ~ file: FileList.tsx ~ line 12 ~ fetchList ~ response");
       setFiles(response.data);
     };
     if (path) {
@@ -42,7 +29,11 @@ const Files = ({ path }: FileListProps) => {
     }
   }, [path]);
 
-  const components = files.map((file) => <FileRow file={file} />);
+  if (!path) return null;
+
+  const components = files.map((file: File) => (
+    <FileRow file={file} handleClick={() => onPreview(file.file)} />
+  ));
   return <div>{components}</div>;
 };
 
