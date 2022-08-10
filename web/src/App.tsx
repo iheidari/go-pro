@@ -16,7 +16,7 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto px-4 bg-sky-300">
+    <div className="container mx-auto px-4">
       <form onSubmit={handleSubmit}>
         <input name="path" />
         <input type="submit" value="Submit" />
