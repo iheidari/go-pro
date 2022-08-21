@@ -1,14 +1,15 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Files from "./components/Files";
+import Form from "./components/Form";
 import Video from "./components/Video";
 
 function App() {
   const [path, setPath] = useState<string>("");
   const [previewFile, setPreviewFile] = useState<string>("");
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    setPath(e.target["path"].value);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setPath((event.target as any)["path"].value);
   };
 
   const handlePreview = (file: string) => {
@@ -17,12 +18,11 @@ function App() {
 
   return (
     <div className="container mx-auto px-4">
-      <form onSubmit={handleSubmit}>
-        <input name="path" />
-        <input type="submit" value="Submit" />
-      </form>
-      <Files path={path} onPreview={handlePreview} />
-      <Video previewFile={previewFile} />
+      <Form onSubmit={handleSubmit} />
+      <div className="flex flex-row">
+        <Files path={path} onPreview={handlePreview} />
+        <Video previewFile={previewFile} />
+      </div>
     </div>
   );
 }

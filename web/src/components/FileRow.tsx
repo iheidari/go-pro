@@ -13,12 +13,12 @@ const FileRow = ({
   };
   return (
     <div
-      className="grid gap-4 grid-cols-4 hover:bg-sky-100 hover:cursor-pointer"
+      className="flex flex-row gap-8 w-full hover:bg-sky-100 hover:cursor-pointer"
       onClick={onClick}
     >
-      <div>{file.name}</div>
-      <div className="w-16">{bytesToSize(file.size)}</div>
-      <div>{new Date(file.birthtime).toLocaleString()}</div>
+      <div className="w-5/12">{file.name}</div>
+      <div className="w-2/12">{bytesToSize(file.size)}</div>
+      <div className="w-5/12">{new Date(file.birthtime).toLocaleString()}</div>
     </div>
   );
 };

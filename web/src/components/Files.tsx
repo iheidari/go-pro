@@ -32,9 +32,13 @@ const Files = ({ path, onPreview }: FileListProps) => {
   if (!path) return null;
 
   const components = files.map((file: File) => (
-    <FileRow file={file} handleClick={() => onPreview(file.file)} />
+    <FileRow
+      key={file.name}
+      file={file}
+      handleClick={() => onPreview(file.file)}
+    />
   ));
-  return <div>{components}</div>;
+  return <div className="w-2/5">{components}</div>;
 };
 
 export default Files;
