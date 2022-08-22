@@ -1,4 +1,4 @@
-import { Cuts } from ".";
+import { ICuts } from "./Cuts";
 
 const twoDigits = (num: number): string => {
   if (num < 10) {
@@ -15,7 +15,7 @@ const secondsToMinutes = (seconds: number): string => {
 
 const ARROW = " -> ";
 const SEPERATOR = " ,";
-export const stringify = (cuts: Cuts[]): string => {
+export const stringify = (cuts: ICuts[]): string => {
   return cuts.reduce((acc, cur, index) => {
     acc += `${index > 0 ? SEPERATOR : ""}${secondsToMinutes(
       cur.start

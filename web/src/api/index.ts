@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  // baseURL: apiBaseUrl,
+  baseURL: process.env.REACT_APP_API_BASE_URL,
   responseType: "json",
   withCredentials: false,
   headers: {

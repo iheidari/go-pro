@@ -21,7 +21,7 @@ const Files = ({ path, onPreview }: FileListProps) => {
 
   useEffect(() => {
     const fetchList = async (path: string) => {
-      const response = await api.get(`http://localhost:3001/file?path=${path}`);
+      const response = await api.get(`/file?path=${path}`);
       setFiles(response.data);
     };
     if (path) {
@@ -33,7 +33,7 @@ const Files = ({ path, onPreview }: FileListProps) => {
 
   const components = files.map((file: File) => (
     <FileRow
-      key={file.name}
+      key={file.file}
       file={file}
       handleClick={() => onPreview(file.file)}
     />

@@ -13,7 +13,7 @@ function App() {
   };
 
   const handlePreview = (file: string) => {
-    setPreviewFile(`http://localhost:3001${file}`);
+    setPreviewFile(`${process.env.REACT_APP_API_BASE_URL}${file}`);
   };
 
   return (
