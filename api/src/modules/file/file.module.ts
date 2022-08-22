@@ -5,10 +5,12 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 
 export const STATIC_PATH = 'F:\\go-pro';
 
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     ServeStaticModule.forRoot({
-      rootPath: STATIC_PATH,
+      rootPath: process.env.STATIC_PATH,
     }),
   ],
   controllers: [FileController],
