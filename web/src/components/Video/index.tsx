@@ -1,33 +1,21 @@
-import React, { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import Header from "./Header";
+import { stringify } from "./util";
 
 type VideoProps = {
   previewFile?: string;
 };
 
-interface Cuts {
+export interface Cuts {
   start: number;
   end?: number;
 }
 
-const secondsToMinutes = (seconds: number): string => {
-  const round = Math.round(seconds);
-
-  return `${Math.floor(round / 60)}:${round % 60}`;
-};
-const stringify = (cuts: Cuts[]): string => {
-  return cuts.reduce((acc, cur) => {
-    acc += `${secondsToMinutes(cur.start)} -> ${
-      cur.end ? secondsToMinutes(cur.end) : "end"
-    } * `;
-    return acc;
-  }, "");
-};
-
 const Video = ({ previewFile }: VideoProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [autoPlay, setAutoPlay] = React.useState<boolean>(false);
-  const [cuts, setCuts] = React.useState<Cuts[]>([]);
-  const [error, setError] = React.useState<string>("");
+  const [autoPlay, setAutoPlay] = useState<boolean>(false);
+  const [cuts, setCuts] = useState<Cuts[]>([]);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     setCuts([]);
@@ -37,8 +25,8 @@ const Video = ({ previewFile }: VideoProps) => {
     return null;
   }
 
-  const handleChange = (event: any) => {
-    setAutoPlay(!!event.target.checked);
+  const handleAutoPlayChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setAutoPlay(!!event.currentTarget.checked);
   };
 
   const handleStart = () => {
@@ -82,17 +70,7 @@ const Video = ({ previewFile }: VideoProps) => {
 
   return (
     <div className="w-3/5">
-      <div className="mb-2">
-        <input
-          id="chkAutoPlay"
-          type="checkbox"
-          onChange={handleChange}
-          checked={autoPlay}
-        />
-        <label className="ml-2" htmlFor="chkAutoPlay">
-          Auto play
-        </label>
-      </div>
+      <Header autoPlay={autoPlay} onAutoPlayChange={handleAutoPlayChange} />
       <video
         controls
         width="100%"
