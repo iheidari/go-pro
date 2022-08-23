@@ -56,6 +56,12 @@ const Video = ({ state, dispatch }: VideoProps) => {
     });
   };
 
+  const handleTimeClick = (time: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+    }
+  };
+
   return (
     <div className="w-3/5">
       <Header autoPlay={autoPlay} onAutoPlayChange={handleAutoPlayChange} />
@@ -74,6 +80,7 @@ const Video = ({ state, dispatch }: VideoProps) => {
         onStart={handleStart}
         onEnd={handleEnd}
         onDelete={handleDelete}
+        onTimeClick={handleTimeClick}
         error={error}
       />
     </div>

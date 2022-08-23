@@ -1,4 +1,4 @@
-import { stringify } from "./util";
+import Time from "./Time";
 
 export interface ICuts {
   start: number;
@@ -10,10 +10,18 @@ type CutsProps = {
   onStart: () => void;
   onEnd: () => void;
   onDelete: () => void;
+  onTimeClick: (time: number) => void;
   error: string;
 };
 
-const Cuts = ({ cuts, onStart, onEnd, onDelete, error }: CutsProps) => {
+const Cuts = ({
+  cuts,
+  onStart,
+  onEnd,
+  onDelete,
+  onTimeClick,
+  error,
+}: CutsProps) => {
   return (
     <div>
       <div className="flex flex-row my-2">
@@ -31,7 +39,14 @@ const Cuts = ({ cuts, onStart, onEnd, onDelete, error }: CutsProps) => {
         >
           ]
         </button>
-        <div className="py-2 px-2">{stringify(cuts)}</div>
+        <div className="flex flex-wrap">
+          {cuts.map((cut) => (
+            <div className="flex mx-1 my-1">
+              <Time seconds={cut.start} left onClick={onTimeClick} />{" "}
+              <Time seconds={cut.end} right onClick={onTimeClick} />
+            </div>
+          ))}
+        </div>
         {cuts.length > 0 && (
           <button
             onClick={onDelete}
