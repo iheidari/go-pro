@@ -1,27 +1,28 @@
-import React, { useState } from "react";
+import { useReducer, useState } from "react";
+import appReducer from "./App.reducer";
 import Files from "./components/Files";
 import Form from "./components/Form";
 import Video from "./components/Video";
 
 function App() {
+  const [state, dispatch] = useReducer(appReducer, {
+    videoCuts: {},
+    error: "",
+  });
+
   const [path, setPath] = useState<string>("");
-  const [previewFile, setPreviewFile] = useState<string>("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setPath((event.target as any)["path"].value);
   };
 
-  const handlePreview = (file: string) => {
-    setPreviewFile(`${process.env.REACT_APP_API_BASE_URL}${file}`);
-  };
-
   return (
     <div className="container mx-auto px-4">
       <Form onSubmit={handleSubmit} />
       <div className="flex flex-row">
-        <Files path={path} onPreview={handlePreview} />
-        <Video previewFile={previewFile} />
+        <Files path={path} state={state} dispatch={dispatch} />
+        <Video state={state} dispatch={dispatch} />
       </div>
     </div>
   );

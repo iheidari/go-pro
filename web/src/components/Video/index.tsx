@@ -1,24 +1,29 @@
-import { useState, useEffect, useRef } from "react";
-import Cuts, { ICuts } from "./Cuts";
+import { useState, useRef, Dispatch } from "react";
+import { IAppActions, IAppState } from "../../App.reducer";
+import Cuts from "./Cuts";
 import Header from "./Header";
 
 type VideoProps = {
-  previewFile?: string;
+  state: IAppState;
+  dispatch: Dispatch<IAppActions>;
 };
 
-const Video = ({ previewFile }: VideoProps) => {
+const Video = ({ state, dispatch }: VideoProps) => {
+  const { selectedVideoFile, videoCuts, error } = state;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [autoPlay, setAutoPlay] = useState<boolean>(false);
-  const [cuts, setCuts] = useState<ICuts[]>([]);
-  const [error, setError] = useState<string>("");
+  // const [cuts, setCuts] = useState<ICuts[]>([]);
+  // const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    setCuts([]);
-  }, [previewFile]);
+  // useEffect(() => {
+  //   setCuts([]);
+  // }, [previewFile]);
 
-  if (!previewFile) {
+  if (!selectedVideoFile) {
     return null;
   }
+
+  const cuts = videoCuts[selectedVideoFile] || [];
 
   const handleAutoPlayChange = (event: React.FormEvent<HTMLInputElement>) => {
     setAutoPlay(!!event.currentTarget.checked);
@@ -26,44 +31,29 @@ const Video = ({ previewFile }: VideoProps) => {
 
   const handleStart = () => {
     if (videoRef.current) {
-      setError("");
-      const { currentTime } = videoRef.current;
-      if (cuts.length === 0) {
-        return setCuts([{ start: currentTime }]);
-      }
-      if (
-        currentTime < (cuts[cuts.length - 1].end || 0) ||
-        currentTime < cuts[cuts.length - 1].start
-      ) {
-        return setError("Bad Start time");
-      }
-      if (cuts[cuts.length - 1].end) {
-        return setCuts((cuts) => [...cuts, { start: currentTime }]);
-      }
-      const newCuts = [...cuts];
-      newCuts[newCuts.length - 1].start = currentTime;
-      setCuts(newCuts);
+      const { currentTime, duration } = videoRef.current;
+      dispatch({
+        type: "startCut",
+        payload: { file: selectedVideoFile, start: currentTime, duration },
+      });
     }
   };
 
   const handleEnd = () => {
     if (videoRef.current) {
       const { currentTime } = videoRef.current;
-      if (cuts.length === 0) {
-        setCuts([{ start: 0, end: currentTime }]);
-      }
-      const newCuts = [...cuts];
-      newCuts[newCuts.length - 1].end = currentTime;
-      setCuts(newCuts);
+      dispatch({
+        type: "endCut",
+        payload: { file: selectedVideoFile, end: currentTime },
+      });
     }
   };
 
   const handleDelete = () => {
-    if (cuts.length > 0) {
-      setCuts((cuts) =>
-        cuts.filter((c, index, all) => index !== all.length - 1)
-      );
-    }
+    dispatch({
+      type: "deleteCut",
+      payload: { file: selectedVideoFile },
+    });
   };
 
   return (
@@ -72,7 +62,7 @@ const Video = ({ previewFile }: VideoProps) => {
       <video
         controls
         width="100%"
-        src={previewFile}
+        src={`${process.env.REACT_APP_API_BASE_URL}${selectedVideoFile}`}
         autoPlay={autoPlay}
         id="video"
         ref={videoRef}

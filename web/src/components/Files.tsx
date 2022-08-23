@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { Dispatch, useEffect, useState } from "react";
 import api from "../api";
+import { IAppActions, IAppState } from "../App.reducer";
 import FileRow from "./FileRow";
 
 export type File = {
@@ -13,10 +14,11 @@ export type File = {
 
 interface FileListProps {
   path?: string;
-  onPreview: (file: string) => void;
+  state: IAppState;
+  dispatch: Dispatch<IAppActions>;
 }
 
-const Files = ({ path, onPreview }: FileListProps) => {
+const Files = ({ path, state, dispatch }: FileListProps) => {
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
@@ -29,13 +31,18 @@ const Files = ({ path, onPreview }: FileListProps) => {
     }
   }, [path]);
 
+  const handlePreview = (file: string) => () => {
+    dispatch({ type: "selectVideo", payload: { file } });
+  };
+
   if (!path) return null;
 
   const components = files.map((file: File) => (
     <FileRow
       key={file.file}
       file={file}
-      handleClick={() => onPreview(file.file)}
+      selected={state.selectedVideoFile === file.file}
+      handleClick={handlePreview(file.file)}
     />
   ));
   return <div className="w-2/5">{components}</div>;

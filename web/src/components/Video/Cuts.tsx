@@ -2,7 +2,7 @@ import { stringify } from "./util";
 
 export interface ICuts {
   start: number;
-  end?: number;
+  end: number;
 }
 
 type CutsProps = {

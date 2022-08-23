@@ -3,8 +3,6 @@ import { FileController } from './file.controller';
 import { FileService } from './file.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
-export const STATIC_PATH = 'F:\\go-pro';
-
 import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [

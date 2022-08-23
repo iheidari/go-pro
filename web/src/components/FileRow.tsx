@@ -1,19 +1,21 @@
 import { File } from "./Files";
 
-const FileRow = ({
-  file,
-  handleClick,
-}: {
+interface FileRowProps {
   file: File;
   handleClick: () => void;
-}) => {
+  selected: boolean;
+}
+
+const FileRow = ({ file, handleClick, selected }: FileRowProps) => {
   const onClick = (event: any) => {
     event.preventDefault();
     handleClick();
   };
   return (
     <div
-      className="flex flex-row gap-8 w-full hover:bg-sky-100 hover:cursor-pointer"
+      className={`flex flex-row gap-8 w-full hover:bg-sky-100 ${
+        selected ? "bg-sky-100 font-semibold" : "hover:cursor-pointer"
+      }`}
       onClick={onClick}
     >
       <div className="w-5/12">{file.name}</div>
