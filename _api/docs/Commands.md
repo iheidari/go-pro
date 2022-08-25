@@ -14,3 +14,11 @@ ffmpeg -i "concat:${\_FILES.join("|")}" -c copy -bsf:a aac_adtstoasc output.mp4
 add watermark
 ffmpeg -i output.mp4 -i iman.png -filter_complex "overlay=10:10" watermarket.mp4
 https://gist.github.com/bennylope/d5d6029fb63648582fed2367ae23cfd6
+
+rotate
+ffmpeg -i in.mov -vf "transpose=1" out.mov
+0 = 90CounterCLockwise and Vertical Flip (default)
+1 = 90Clockwise
+2 = 90CounterClockwise
+3 = 90Clockwise and Vertical Flip
+-vf "transpose=2,transpose=2" for 180 degrees
