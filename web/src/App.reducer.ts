@@ -12,6 +12,10 @@ export interface IAppState {
 
 export type IAppActions =
   | {
+      type: "setCuts";
+      payload: { file: string; cuts: ICuts[] };
+    }
+  | {
       type: "startCut";
       payload: { file: string; start: number; duration: number };
     }
@@ -23,6 +27,11 @@ export type IAppDispatch = (state: IAppState, action: IAppActions) => IAppState;
 
 const appReducer = (state: IAppState, action: IAppActions): IAppState => {
   switch (action.type) {
+    case "setCuts": {
+      const { file, cuts } = action.payload;
+
+      return { ...state, videoCuts: { ...state.videoCuts, [file]: cuts } };
+    }
     case "startCut": {
       const { file, start, duration } = action.payload;
       const cuts = state.videoCuts[file] || [];

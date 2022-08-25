@@ -7,8 +7,12 @@ import { checkFileExists, getDataFileName } from './util';
 export class VideoService {
   async getCuts(file: string) {
     try {
-      const dataFile = getDataFileName(file);
-      const data = await readFile(dataFile);
+      const dataFileName = getDataFileName(file);
+      const fileExists = await checkFileExists(dataFileName);
+      if (!fileExists) {
+        return;
+      }
+      const data = await readFile(dataFileName);
       return JSON.parse(data.toString())['Cuts'];
     } catch (err) {
       throw err;
@@ -16,14 +20,15 @@ export class VideoService {
   }
   async saveCuts(file: string, cuts: Cut[]) {
     try {
-      const dataFile = getDataFileName(file);
-      const fileExists = await checkFileExists(dataFile);
+      const dataFileName = getDataFileName(file);
+      const fileExists = await checkFileExists(dataFileName);
       let data = {};
       if (fileExists) {
-        const rawData = await readFile(dataFile);
+        const rawData = await readFile(dataFileName);
         data = JSON.parse(rawData.toString());
       }
-      await writeFile(dataFile, JSON.stringify({ ...data, Cuts: cuts }));
+      const fileData = JSON.stringify({ ...data, Cuts: cuts });
+      await writeFile(dataFileName, fileData);
     } catch (err) {
       throw err;
     }
