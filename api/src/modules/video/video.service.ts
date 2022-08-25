@@ -8,6 +8,10 @@ export class VideoService {
   async getCuts(file: string) {
     try {
       const dataFile = getDataFileName(file);
+      const fileExists = await checkFileExists(dataFile);
+      if (!fileExists) {
+        return;
+      }
       const data = await readFile(dataFile);
       return JSON.parse(data.toString())['Cuts'];
     } catch (err) {
