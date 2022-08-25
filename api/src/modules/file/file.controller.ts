@@ -7,6 +7,7 @@ export class FileController {
 
   @Get()
   getFiles(@Query('path') path) {
+    console.log(`GET:file, path=${path}`);
     return this.fileService.getFiles(path);
   }
 }

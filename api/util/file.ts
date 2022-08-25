@@ -27,7 +27,10 @@ const getFileInfo = (
 
   const { birthtimeMs, size } = fs.statSync(file);
   return {
-    file: file.replace(dirPath, '').replace(/\\\\/g, '\\'),
+    file: file
+      .toLowerCase()
+      .replace(dirPath.toLowerCase(), '')
+      .replace(/\\\\/g, '\\'),
     path: filePath,
     extension,
     name: basename,
