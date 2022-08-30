@@ -14,7 +14,6 @@ function App() {
 
   useEffect(() => {
     const saveCuts = async (file: string, cuts: ICuts[]) => {
-      console.log("🚀 ~ saveCuts ~ file", file);
       await api.post(`/video/cuts`, { file, cuts });
     };
     if (state.selectedVideoFile && state.videoCuts[state.selectedVideoFile])
@@ -26,7 +25,6 @@ function App() {
 
   useEffect(() => {
     const getCuts = async (file: string) => {
-      console.log("🚀 ~ saveCuts ~ file", file);
       const response = await api.get(`/video/cuts?file=${file}`);
       if (response.status === 200) {
         dispatch({ type: "setCuts", payload: { file, cuts: response.data } });
