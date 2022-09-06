@@ -13,29 +13,15 @@ export type File = {
 };
 
 interface FileListProps {
-  path?: string;
+  files: File[];
   state: IAppState;
   dispatch: Dispatch<IAppActions>;
 }
 
-const Files = ({ path, state, dispatch }: FileListProps) => {
-  const [files, setFiles] = useState([]);
-
-  useEffect(() => {
-    const fetchList = async (path: string) => {
-      const response = await api.get(`/file?path=${path}`);
-      setFiles(response.data);
-    };
-    if (path) {
-      fetchList(path);
-    }
-  }, [path]);
-
+const Files = ({ files, state, dispatch }: FileListProps) => {
   const handlePreview = (file: string) => () => {
     dispatch({ type: "selectVideo", payload: { file } });
   };
-
-  if (!path) return null;
 
   const components = files.map((file: File) => (
     <FileRow

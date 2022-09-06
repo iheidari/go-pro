@@ -13,12 +13,14 @@ export type File = {
 const getFileInfo = (
   file: string,
   dirPath: string,
-  extensionFilter?: string,
+  extensionFilter: string[],
 ): File | null => {
   const extension = path.extname(file);
   if (
-    extensionFilter &&
-    extensionFilter.toLowerCase() !== extension.toLowerCase()
+    extensionFilter.length > 0 &&
+    !extensionFilter.find(
+      (ext) => ext.toLowerCase() === extension.toLowerCase(),
+    )
   ) {
     return null;
   }
@@ -38,10 +40,13 @@ const getFileInfo = (
 
 export const getAllFiles = (
   dirPath: string,
-  extension: string,
+  extension: string[],
   arrayOfFiles?: File[],
   originalPath?: string,
 ) => {
+  if (!fs.existsSync(dirPath)) {
+    return [];
+  }
   const filesAndDirectories = fs.readdirSync(dirPath);
 
   arrayOfFiles = arrayOfFiles || [];
