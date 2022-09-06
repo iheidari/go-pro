@@ -2,7 +2,7 @@ const gpmfExtract = require("gpmf-extract");
 const goproTelemetry = require(`gopro-telemetry`);
 const fs = require("fs");
 
-const file = fs.readFileSync("./OUTPUT-telemetry-only.mp4");
+const file = fs.readFileSync("./files/GH020351.MP4.tmp.mp4");
 
 gpmfExtract(file)
   .then((extracted) => {
@@ -16,5 +16,4 @@ gpmfExtract(file)
   })
   .catch((error) => console.error(error));
 
-
-  https://www.google.com/maps/dir/49.7709564,-123.1395772/49.7755019,-123.1396777/@49.763975,-123.1049883,13.77z
+//  https://www.google.com/maps/dir/49.7709564,-123.1395772/49.7755019,-123.1396777/@49.763975,-123.1049883,13.77z

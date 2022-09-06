@@ -4,10 +4,14 @@ specifiers:
   axios: ^0.27.2
   dotenv: ^16.0.1
   eslint: ^8.20.0
+  gopro-telemetry: ^1.1.37
+  gpmf-extract: ^0.2.5
 
 dependencies:
   axios: 0.27.2
   dotenv: 16.0.1
+  gopro-telemetry: 1.1.37
+  gpmf-extract: 0.2.5
 
 devDependencies:
   eslint: 8.20.0
@@ -30,6 +34,13 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@gmod/binary-parser/1.4.1:
+    resolution: {integrity: sha512-288CLUbiZ/4N71LT9hmZkhZ2UpPMNDD28x8R7bJ+jS8Fd06ly5LOpbIBwsWgIgWDLB4fng18wCUq+FR55QCCJg==}
+    engines: {node: '>=5.10.0'}
+    dependencies:
+      long: 4.0.0
+    dev: false
 
   /@humanwhocodes/config-array/0.9.5:
     resolution: {integrity: sha512-ObyMyWxZiCu/yTisA7uzx81s40xR2fD5Cg/2Kq7G02ajkNubJf6BopgDTmDyc3U7sXpNKM8cYOw7s7Tyr+DnCw==}
@@ -87,6 +98,12 @@ packages:
 
   /asynckit/0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
+    dev: false
+
+  /atob/2.1.2:
+    resolution: {integrity: sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==}
+    engines: {node: '>= 4.5.0'}
+    hasBin: true
     dev: false
 
   /axios/0.27.2:
@@ -184,6 +201,12 @@ packages:
   /dotenv/16.0.1:
     resolution: {integrity: sha512-1K6hR6wtk2FviQ4kEiSjFiH5rpzEVi8WW0x96aztHVMhEspNpc4DVOUTEHtEva5VThQ8IaBX1Pe4gSzpVVUsKQ==}
     engines: {node: '>=12'}
+    dev: false
+
+  /egm96-universal/1.1.0:
+    resolution: {integrity: sha512-LsrOHkIDyFIwRK2PnY3eBC8Efyn+rjzFagOGHFid1CbPee7rgAzezgiYDZodwG8yEggA23mVW0yNvUMkc7XsXw==}
+    dependencies:
+      rfc4648: 1.5.2
     dev: false
 
   /escape-string-regexp/4.0.0:
@@ -379,6 +402,21 @@ packages:
       type-fest: 0.20.2
     dev: true
 
+  /gopro-telemetry/1.1.37:
+    resolution: {integrity: sha512-znkSJvX/nFB/PQ3RcnPgEfOeu/xPnvIQBOeJuAOzhLomNQUL7qlvx8jxZ3rCPZ/P/KxIs4uYHAgD08pTVxBFYg==}
+    dependencies:
+      '@gmod/binary-parser': 1.4.1
+      atob: 2.1.2
+      egm96-universal: 1.1.0
+    dev: false
+
+  /gpmf-extract/0.2.5:
+    resolution: {integrity: sha512-10gMu+sf/qpy49/e8dvrCXPBSUJg4sdfEqpX20vemk8F97fj/Pkr9qbkDGiM/eKBHwj/5kA262++ypSRUz9ePA==}
+    dependencies:
+      inline-worker: 1.1.0
+      mp4box: 0.4.9
+    dev: false
+
   /has-flag/4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
@@ -412,6 +450,10 @@ packages:
   /inherits/2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: true
+
+  /inline-worker/1.1.0:
+    resolution: {integrity: sha512-2nlxBGg5Uoop6IRco9wMzlAz62690ylokrUDg3IaCi9bJaq0HykbWlRtRXgvSKiBNmCBGXnOCFBkIFjaSGJocA==}
+    dev: false
 
   /is-extglob/2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
@@ -456,6 +498,10 @@ packages:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
 
+  /long/4.0.0:
+    resolution: {integrity: sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==}
+    dev: false
+
   /mime-db/1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
     engines: {node: '>= 0.6'}
@@ -473,6 +519,10 @@ packages:
     dependencies:
       brace-expansion: 1.1.11
     dev: true
+
+  /mp4box/0.4.9:
+    resolution: {integrity: sha512-APZb4ZaCBBXdyxA9nXF5lVb/xc2OPRWbnxwlHOn7tXxiBVchpLUl+nZMF52MLLv0oESnZBSy5qnDj9sRE9LCoQ==}
+    dev: false
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
@@ -536,6 +586,10 @@ packages:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
     dev: true
+
+  /rfc4648/1.5.2:
+    resolution: {integrity: sha512-tLOizhR6YGovrEBLatX1sdcuhoSCXddw3mqNVAcKxGJ+J0hFeJ+SjeWCv5UPA/WU3YzWPPuCVYgXBKZUPGpKtg==}
+    dev: false
 
   /rimraf/3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}

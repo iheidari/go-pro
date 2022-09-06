@@ -22,3 +22,6 @@ ffmpeg -i in.mov -vf "transpose=1" out.mov
 2 = 90CounterClockwise
 3 = 90Clockwise and Vertical Flip
 -vf "transpose=2,transpose=2" for 180 degrees
+
+google path
+https://www.google.com/maps/dir/49.7709564,-123.1395772/49.7755019,-123.1396777/@49.763975,-123.1049883,13.77z

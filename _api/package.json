@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.1",
+    "gopro-telemetry": "^1.1.37",
+    "gpmf-extract": "^0.2.5"
   }
 }

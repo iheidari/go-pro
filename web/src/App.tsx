@@ -33,18 +33,21 @@ function App() {
     if (state.selectedVideoFile) getCuts(state.selectedVideoFile);
   }, [state.selectedVideoFile]);
 
-  const [path, setPath] = useState<string>("");
+  const [files, setFiles] = useState([]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setPath((event.target as any)["path"].value);
+    const path = (event.target as any)["path"].value;
+
+    const response = await api.get(`/file?path=${path}`);
+    setFiles(response.data);
   };
 
   return (
     <div className="container mx-auto px-4">
       <Form onSubmit={handleSubmit} />
       <div className="flex flex-row">
-        <Files path={path} state={state} dispatch={dispatch} />
+        <Files files={files} state={state} dispatch={dispatch} />
         <Video state={state} dispatch={dispatch} />
       </div>
     </div>
