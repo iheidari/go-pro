@@ -1,74 +1,48 @@
-import { useState, useRef, Dispatch } from "react";
-import { IAppActions, IAppState } from "../../App.reducer";
-import Cuts from "./Cuts";
+import { useRef, useReducer, useEffect } from "react";
+import Cuts, { ICuts } from "./Cuts";
 import Header from "./Header";
+import appReducer from "./reducer";
+import api from "../../api";
 
-type VideoProps = {
-  state: IAppState;
-  dispatch: Dispatch<IAppActions>;
-};
+interface VideoProps {
+  selectedVideo?: string;
+}
+const Video = ({ selectedVideo }: VideoProps) => {
+  const [state, dispatch] = useReducer(appReducer, {
+    videoCuts: {},
+    error: "",
+    autoPlay: false,
+  });
 
-const Video = ({ state, dispatch }: VideoProps) => {
-  const { selectedVideoFile, videoCuts, error } = state;
+  useEffect(() => {
+    const saveCuts = async (file: string, cuts: ICuts[]) => {
+      await api.post(`/video/cuts`, { file, cuts });
+    };
+    if (selectedVideo && state.videoCuts[selectedVideo])
+      saveCuts(selectedVideo, state.videoCuts[selectedVideo]);
+  }, [selectedVideo, state.videoCuts]);
+
+  useEffect(() => {
+    const getCuts = async (file: string) => {
+      const response = await api.get(`/video/cuts?file=${file}`);
+      if (response.status === 200) {
+        dispatch({ type: "setCuts", payload: { file, cuts: response.data } });
+      }
+    };
+    if (selectedVideo) {
+      getCuts(selectedVideo);
+    }
+  }, [selectedVideo]);
+
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [autoPlay, setAutoPlay] = useState<boolean>(false);
-  // const [cuts, setCuts] = useState<ICuts[]>([]);
-  // const [error, setError] = useState<string>("");
-
-  // useEffect(() => {
-  //   setCuts([]);
-  // }, [previewFile]);
-
-  if (!selectedVideoFile) {
-    return null;
-  }
-
-  const cuts = videoCuts[selectedVideoFile] || [];
-
-  const handleAutoPlayChange = (event: React.FormEvent<HTMLInputElement>) => {
-    setAutoPlay(!!event.currentTarget.checked);
-  };
-
-  const handleStart = () => {
-    if (videoRef.current) {
-      const { currentTime, duration } = videoRef.current;
-      dispatch({
-        type: "startCut",
-        payload: { file: selectedVideoFile, start: currentTime, duration },
-      });
-    }
-  };
-
-  const handleEnd = () => {
-    if (videoRef.current) {
-      const { currentTime } = videoRef.current;
-      dispatch({
-        type: "endCut",
-        payload: { file: selectedVideoFile, end: currentTime },
-      });
-    }
-  };
-
-  const handleDelete = () => {
-    dispatch({
-      type: "deleteCut",
-      payload: { file: selectedVideoFile },
-    });
-  };
-
-  const handleTimeClick = (time: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time;
-    }
-  };
-
+  const { autoPlay } = state;
   return (
     <div className="w-3/5">
-      <Header autoPlay={autoPlay} onAutoPlayChange={handleAutoPlayChange} />
+      <Header {...{ state, dispatch }} />
       <video
         controls
         width="100%"
-        src={`${process.env.REACT_APP_API_BASE_URL}${selectedVideoFile}`}
+        src={`${process.env.REACT_APP_API_BASE_URL}${selectedVideo}`}
         autoPlay={autoPlay}
         id="video"
         ref={videoRef}
@@ -76,12 +50,8 @@ const Video = ({ state, dispatch }: VideoProps) => {
         Sorry, your browser doesn't support embedded videos.
       </video>
       <Cuts
-        cuts={cuts}
-        onStart={handleStart}
-        onEnd={handleEnd}
-        onDelete={handleDelete}
-        onTimeClick={handleTimeClick}
-        error={error}
+        {...{ state, dispatch, selectedVideo }}
+        videoElement={videoRef.current}
       />
     </div>
   );

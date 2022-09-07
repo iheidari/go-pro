@@ -1,16 +1,16 @@
-import { ICuts } from "./components/Video/Cuts";
+import { ICuts } from "./Cuts";
 
 interface IVideoCuts {
   [file: string]: ICuts[];
 }
 
-export interface IAppState {
+export interface IVideoState {
   videoCuts: IVideoCuts;
   error: string;
-  selectedVideoFile?: string;
+  autoPlay: boolean;
 }
 
-export type IAppActions =
+export type IVideoActions =
   | {
       type: "setCuts";
       payload: { file: string; cuts: ICuts[] };
@@ -21,11 +21,17 @@ export type IAppActions =
     }
   | { type: "endCut"; payload: { file: string; end: number } }
   | { type: "deleteCut"; payload: { file: string } }
-  | { type: "selectVideo"; payload: { file: string } };
+  | { type: "setAutoPlay"; payload: { autoPlay: boolean } };
 
-export type IAppDispatch = (state: IAppState, action: IAppActions) => IAppState;
+export type IVideoDispatch = (
+  state: IVideoState,
+  action: IVideoActions
+) => IVideoState;
 
-const appReducer = (state: IAppState, action: IAppActions): IAppState => {
+const videoReducer = (
+  state: IVideoState,
+  action: IVideoActions
+): IVideoState => {
   switch (action.type) {
     case "setCuts": {
       const { file, cuts } = action.payload;
@@ -120,15 +126,12 @@ const appReducer = (state: IAppState, action: IAppActions): IAppState => {
       }
       return state;
     }
-    case "selectVideo": {
-      return {
-        ...state,
-        selectedVideoFile: action.payload.file,
-      };
+    case "setAutoPlay": {
+      return { ...state, autoPlay: action.payload.autoPlay };
     }
     default:
       throw new Error();
   }
 };
 
-export default appReducer;
+export default videoReducer;

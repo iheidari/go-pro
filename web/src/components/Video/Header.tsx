@@ -1,11 +1,19 @@
-import React from "react";
+import React, { Dispatch } from "react";
+import { IVideoActions, IVideoState } from "./reducer";
 
 type Props = {
-  autoPlay?: boolean;
-  onAutoPlayChange: (event: React.FormEvent<HTMLInputElement>) => void;
+  state: IVideoState;
+  dispatch: Dispatch<IVideoActions>;
 };
 
-const Header = ({ autoPlay, onAutoPlayChange }: Props) => {
+const Header = ({ state, dispatch }: Props) => {
+  const { autoPlay } = state;
+  const onAutoPlayChange = (event: React.FormEvent<HTMLInputElement>) => {
+    dispatch({
+      type: "setAutoPlay",
+      payload: { autoPlay: !!event.currentTarget.checked },
+    });
+  };
   return (
     <div className="mb-2">
       <input
