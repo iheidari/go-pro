@@ -5,15 +5,18 @@ specifiers:
   '@testing-library/react': ^13.3.0
   '@testing-library/user-event': ^13.5.0
   '@types/jest': ^27.5.2
+  '@types/leaflet': ^1.7.11
   '@types/node': ^16.11.47
   '@types/react': ^18.0.15
   '@types/react-dom': ^18.0.6
   autoprefixer: ^10.4.8
   axios: ^0.27.2
   eslint: ^8.21.0
+  leaflet: ^1.8.0
   postcss: ^8.4.14
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-leaflet: ^4.0.2
   react-scripts: 5.0.1
   tailwindcss: ^3.1.7
   typescript: ^4.7.4
@@ -28,13 +31,16 @@ dependencies:
   '@types/react': 18.0.15
   '@types/react-dom': 18.0.6
   axios: 0.27.2
+  leaflet: 1.8.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-leaflet: 4.0.2_zklzwh7pdkx5k4fi5tz77jtq6y
   react-scripts: 5.0.1_qtbnez4q7bzoc4eqybg3efzzxe
   typescript: 4.7.4
   web-vitals: 2.1.4
 
 devDependencies:
+  '@types/leaflet': 1.7.11
   autoprefixer: 10.4.8_postcss@8.4.14
   eslint: 8.21.0
   postcss: 8.4.14
@@ -1953,6 +1959,18 @@ packages:
       webpack-dev-server: 4.9.3_webpack@5.74.0
     dev: false
 
+  /@react-leaflet/core/2.0.1_zklzwh7pdkx5k4fi5tz77jtq6y:
+    resolution: {integrity: sha512-XGmx01DovDt0IWsW4tqeuSYifpY19aUn9NYCqTBI3KNtjbCjj0pfiWa7krNsnJ6l2oQbv4Nt0/BabLbIvT4ocA==}
+    peerDependencies:
+      leaflet: ^1.8.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      leaflet: 1.8.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /@rollup/plugin-babel/5.3.1_tui6liyexu3zy4m5r2rytc7ixu:
     resolution: {integrity: sha512-WFfdLWU/xVWKeRQnKmIAQULUI7Il0gZnBIH/ZFO069wYIfPu+8zrfp/KMW0atmELoRDq8FbiP3VCss9MhCut7Q==}
     engines: {node: '>= 10.0.0'}
@@ -2309,6 +2327,10 @@ packages:
       '@types/serve-static': 1.15.0
     dev: false
 
+  /@types/geojson/7946.0.10:
+    resolution: {integrity: sha512-Nmh0K3iWQJzniTuPRcJn5hxXkfB1T1pgB89SBig5PlJQU5yocazeu4jATJlaA0GYFKWMqDdvYemoSnF2pXgLVA==}
+    dev: true
+
   /@types/graceful-fs/4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
     dependencies:
@@ -2355,6 +2377,12 @@ packages:
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: false
+
+  /@types/leaflet/1.7.11:
+    resolution: {integrity: sha512-VwAYom2pfIAf/pLj1VR5aLltd4tOtHyvfaJlNYCoejzP2nu52PrMi1ehsLRMUS+bgafmIIKBV1cMfKeS+uJ0Vg==}
+    dependencies:
+      '@types/geojson': 7946.0.10
+    dev: true
 
   /@types/mime/3.0.0:
     resolution: {integrity: sha512-fccbsHKqFDXClBZTDLA43zl0+TbxyIwyzIzwwhvoJvhNjOErCdeX2xJbURimv2EbSVUGav001PaCJg4mZxMl4w==}
@@ -6331,6 +6359,10 @@ packages:
       language-subtag-registry: 0.3.22
     dev: false
 
+  /leaflet/1.8.0:
+    resolution: {integrity: sha512-gwhMjFCQiYs3x/Sf+d49f10ERXaEFCPr+nVTryhAW8DWbMGqJqt9G4XuIaHmFW08zYvhgdzqXGr8AlW8v8dQkA==}
+    dev: false
+
   /leven/3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
@@ -7945,6 +7977,19 @@ packages:
 
   /react-is/18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+    dev: false
+
+  /react-leaflet/4.0.2_zklzwh7pdkx5k4fi5tz77jtq6y:
+    resolution: {integrity: sha512-pDyIf50Ek/LZ0p4Qxw2D9LMOx+LytQs2R+MY3mhTUPGzubrpP4QAgbCv2qc0L9y0qVRgx7dHavWuPFkc/WCJCw==}
+    peerDependencies:
+      leaflet: ^1.8.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      '@react-leaflet/core': 2.0.1_zklzwh7pdkx5k4fi5tz77jtq6y
+      leaflet: 1.8.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react-refresh/0.11.0:

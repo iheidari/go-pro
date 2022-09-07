@@ -19,6 +19,11 @@ const Header = ({ selectedVideo, state, dispatch }: Props) => {
       });
       setLoading(false);
       if (response.status === 201) {
+        console.log(
+          "🚀 ~ file: Header.tsx ~ line 22 ~ handleGetGps ~ response",
+          response.data
+        );
+
         return alert("Finished Successfully");
       }
       return alert("Failed" + response.status);

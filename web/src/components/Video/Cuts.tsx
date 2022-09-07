@@ -16,7 +16,7 @@ type CutsProps = {
 
 const Cuts = ({ selectedVideo, videoElement, state, dispatch }: CutsProps) => {
   if (!selectedVideo) {
-    return null;
+    return <div className="my-2 h-12"></div>;
   }
 
   const { videoCuts, error } = state;

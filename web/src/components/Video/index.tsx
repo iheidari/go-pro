@@ -3,6 +3,7 @@ import Cuts, { ICuts } from "./Cuts";
 import Header from "./Header";
 import appReducer from "./reducer";
 import api from "../../api";
+import Map from "../Map";
 
 interface VideoProps {
   selectedVideo?: string;
@@ -53,6 +54,7 @@ const Video = ({ selectedVideo }: VideoProps) => {
         {...{ state, dispatch, selectedVideo }}
         videoElement={videoRef.current}
       />
+      <Map selectedVideo={selectedVideo} />
     </div>
   );
 };
