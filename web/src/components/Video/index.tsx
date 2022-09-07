@@ -38,7 +38,7 @@ const Video = ({ selectedVideo }: VideoProps) => {
   const { autoPlay } = state;
   return (
     <div className="w-3/5">
-      <Header {...{ state, dispatch }} />
+      <Header {...{ state, dispatch, selectedVideo }} />
       <video
         controls
         width="100%"
