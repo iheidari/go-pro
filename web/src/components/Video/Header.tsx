@@ -18,15 +18,11 @@ const Header = ({ selectedVideo, state, dispatch }: Props) => {
         file: selectedVideo,
       });
       setLoading(false);
-      if (response.status === 201) {
-        console.log(
-          "🚀 ~ file: Header.tsx ~ line 22 ~ handleGetGps ~ response",
-          response.data
-        );
-
-        return alert("Finished Successfully");
+      if (response.status === 200 || response.status === 201) {
+        dispatch({ type: "setGps", payload: { gps: response.data.data } });
+        return;
       }
-      return alert("Failed" + response.status);
+      return alert("Failed: " + response.status);
     }
   };
   const onAutoPlayChange = (event: React.FormEvent<HTMLInputElement>) => {

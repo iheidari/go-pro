@@ -1,4 +1,4 @@
-import { useRef, useReducer, useEffect } from "react";
+import { useRef, useReducer, useEffect, useState } from "react";
 import Cuts, { ICuts } from "./Cuts";
 import Header from "./Header";
 import appReducer from "./reducer";
@@ -9,10 +9,12 @@ interface VideoProps {
   selectedVideo?: string;
 }
 const Video = ({ selectedVideo }: VideoProps) => {
+  const [currentFrame, setCurrentFrame] = useState(0);
   const [state, dispatch] = useReducer(appReducer, {
     videoCuts: {},
     error: "",
     autoPlay: false,
+    gps: [],
   });
 
   useEffect(() => {
@@ -33,10 +35,17 @@ const Video = ({ selectedVideo }: VideoProps) => {
     if (selectedVideo) {
       getCuts(selectedVideo);
     }
+    // reset gps data
+    dispatch({ type: "setGps", payload: { gps: [] } });
+    setCurrentFrame(0);
   }, [selectedVideo]);
 
+  const handleTimeUpdate = (event: any) => {
+    setCurrentFrame(Math.round(event.target.currentTime));
+  };
+
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { autoPlay } = state;
+  const { autoPlay, gps } = state;
   return (
     <div className="w-3/5">
       <Header {...{ state, dispatch, selectedVideo }} />
@@ -47,6 +56,7 @@ const Video = ({ selectedVideo }: VideoProps) => {
         autoPlay={autoPlay}
         id="video"
         ref={videoRef}
+        onTimeUpdate={handleTimeUpdate}
       >
         Sorry, your browser doesn't support embedded videos.
       </video>
@@ -54,7 +64,12 @@ const Video = ({ selectedVideo }: VideoProps) => {
         {...{ state, dispatch, selectedVideo }}
         videoElement={videoRef.current}
       />
-      <Map selectedVideo={selectedVideo} />
+      <Map
+        selectedVideo={selectedVideo}
+        gpsData={gps}
+        videoElement={videoRef.current}
+        currentFrame={currentFrame}
+      />
     </div>
   );
 };

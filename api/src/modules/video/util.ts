@@ -26,3 +26,21 @@ export async function stripTelemetry(file: string) {
     console.error(e); // should contain code (exit code) and signal (that caused the termination).
   }
 }
+
+export const rawGps5Convertor = (samples) => {
+  return samples.reduce((acc, sample) => {
+    if (
+      acc.length === 0 ||
+      new Date(sample.date).getSeconds() !==
+        new Date(acc[acc.length - 1].date).getSeconds()
+    ) {
+      acc.push({
+        lat: sample.value[0],
+        lng: sample.value[1],
+        date: sample.date,
+        second: acc.length,
+      });
+    }
+    return acc;
+  }, []);
+};

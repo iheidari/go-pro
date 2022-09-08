@@ -1,15 +1,33 @@
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-// import { useMap } from "react-leaflet/hooks";
+import { MapContainer, TileLayer } from "react-leaflet";
+import MapController from "./MapController";
+import Markers from "./Markers";
+import { GpsData } from "./type";
 
 const position = { lat: 51.505, lng: -0.09 };
 interface MapProps {
   selectedVideo?: string;
+  gpsData: GpsData[];
+  videoElement: HTMLVideoElement | null;
+  currentFrame: number;
 }
-const Map = ({ selectedVideo }: MapProps) => {
-  if (!selectedVideo) {
+
+const Map = ({
+  selectedVideo,
+  gpsData,
+  videoElement,
+  currentFrame,
+}: MapProps) => {
+  if (!selectedVideo || gpsData.length === 0) {
     return null;
   }
+
+  const handleMarkerClick = (gps: GpsData) => {
+    if (videoElement) {
+      videoElement.currentTime = gps.second;
+    }
+  };
+
   return (
     <MapContainer
       center={position}
@@ -22,7 +40,12 @@ const Map = ({ selectedVideo }: MapProps) => {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={position}></Marker>
+      <Markers
+        gpsData={gpsData}
+        onClick={handleMarkerClick}
+        currentFrame={currentFrame}
+      />
+      <MapController gpsData={gpsData} />
     </MapContainer>
   );
 };

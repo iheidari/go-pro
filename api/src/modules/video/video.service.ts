@@ -5,6 +5,7 @@ import {
   checkFileExists,
   getDataFileName,
   getServerPath,
+  rawGps5Convertor,
   stripTelemetry,
 } from './util';
 import * as gpmfExtract from 'gpmf-extract';
@@ -53,10 +54,18 @@ export class VideoService {
     try {
       const dataFileName = getDataFileName(fileUri);
       const dataFileExists = await checkFileExists(dataFileName);
-      let dataFile = {};
+      let dataFile = {} as any;
       if (dataFileExists) {
         const rawData = await readFile(dataFileName);
         dataFile = JSON.parse(rawData.toString());
+        if (dataFile.gps5) {
+          const data = rawGps5Convertor(dataFile.gps5.samples);
+          return {
+            status: HttpStatus.OK,
+            message: 'gps data retrived',
+            data: data,
+          };
+        }
       }
       const file = await readFile(tempStripedTelemetryFile);
       const extracted = await gpmfExtract(file);
@@ -64,20 +73,7 @@ export class VideoService {
       const gps5 = telemetry['1'].streams.GPS5;
       const fileData = JSON.stringify({ ...dataFile, gps5 });
       await writeFile(dataFileName, fileData);
-      const data = gps5.samples.reduce((acc, sample) => {
-        if (
-          acc.length === 0 ||
-          new Date(sample.date).getSeconds() !=
-            new Date(acc[acc.length - 1].date).getSeconds()
-        ) {
-          acc.push({
-            lat: sample.value[0],
-            lng: sample.value[1],
-            second: acc.length,
-          });
-        }
-        return acc;
-      }, []);
+      const data = rawGps5Convertor(gps5.samples);
       return {
         status: HttpStatus.CREATED,
         message: 'gps data extracted',

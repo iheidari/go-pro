@@ -74,8 +74,8 @@ const Cuts = ({ selectedVideo, videoElement, state, dispatch }: CutsProps) => {
           ]
         </button>
         <div className="flex flex-wrap">
-          {cuts.map((cut) => (
-            <div className="flex mx-1 my-1">
+          {cuts.map((cut, index) => (
+            <div key={index} className="flex mx-1 my-1">
               <Time seconds={cut.start} left onClick={handleTimeClick} />{" "}
               <Time seconds={cut.end} right onClick={handleTimeClick} />
             </div>

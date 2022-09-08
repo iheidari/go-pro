@@ -1,3 +1,4 @@
+import { GpsData } from "../Map/type";
 import { ICuts } from "./Cuts";
 
 interface IVideoCuts {
@@ -8,6 +9,7 @@ export interface IVideoState {
   videoCuts: IVideoCuts;
   error: string;
   autoPlay: boolean;
+  gps: GpsData[];
 }
 
 export type IVideoActions =
@@ -21,7 +23,8 @@ export type IVideoActions =
     }
   | { type: "endCut"; payload: { file: string; end: number } }
   | { type: "deleteCut"; payload: { file: string } }
-  | { type: "setAutoPlay"; payload: { autoPlay: boolean } };
+  | { type: "setAutoPlay"; payload: { autoPlay: boolean } }
+  | { type: "setGps"; payload: { gps: GpsData[] } };
 
 export type IVideoDispatch = (
   state: IVideoState,
@@ -128,6 +131,9 @@ const videoReducer = (
     }
     case "setAutoPlay": {
       return { ...state, autoPlay: action.payload.autoPlay };
+    }
+    case "setGps": {
+      return { ...state, gps: action.payload.gps };
     }
     default:
       throw new Error();
