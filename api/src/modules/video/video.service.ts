@@ -53,20 +53,36 @@ export class VideoService {
     try {
       const dataFileName = getDataFileName(fileUri);
       const dataFileExists = await checkFileExists(dataFileName);
-      let data = {};
+      let dataFile = {};
       if (dataFileExists) {
         const rawData = await readFile(dataFileName);
-        data = JSON.parse(rawData.toString());
+        dataFile = JSON.parse(rawData.toString());
       }
       const file = await readFile(tempStripedTelemetryFile);
-      gpmfExtract(file).then((extracted) => {
-        goproTelemetry(extracted, {}, async (telemetry) => {
-          const gps5 = telemetry['1'].streams.GPS5;
-          const fileData = JSON.stringify({ ...data, gps5 });
-          await writeFile(dataFileName, fileData);
-        });
-      });
-      return { status: HttpStatus.CREATED, message: 'gps data extracted' };
+      const extracted = await gpmfExtract(file);
+      const telemetry = await goproTelemetry(extracted, {});
+      const gps5 = telemetry['1'].streams.GPS5;
+      const fileData = JSON.stringify({ ...dataFile, gps5 });
+      await writeFile(dataFileName, fileData);
+      const data = gps5.samples.reduce((acc, sample) => {
+        if (
+          acc.length === 0 ||
+          new Date(sample.date).getSeconds() !=
+            new Date(acc[acc.length - 1].date).getSeconds()
+        ) {
+          acc.push({
+            lat: sample.value[0],
+            lng: sample.value[1],
+            second: acc.length,
+          });
+        }
+        return acc;
+      }, []);
+      return {
+        status: HttpStatus.CREATED,
+        message: 'gps data extracted',
+        data: data,
+      };
     } catch (error) {
       console.error(error);
     } finally {
