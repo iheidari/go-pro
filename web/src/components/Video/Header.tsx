@@ -1,6 +1,7 @@
 import React, { Dispatch, useState } from "react";
 import { IVideoActions, IVideoState } from "./reducer";
 import api from "../../api";
+import Button from "../Basic/Button";
 
 type Props = {
   selectedVideo?: string;
@@ -45,12 +46,10 @@ const Header = ({ selectedVideo, state, dispatch }: Props) => {
         </label>
       </div>
       <div>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        <Button
           onClick={handleGetGps}
-        >
-          {loading ? "Loading..." : "Get GPS"}
-        </button>
+          label={loading ? "Loading..." : "Get GPS"}
+        />
       </div>
     </div>
   );

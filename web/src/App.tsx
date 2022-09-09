@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Files from "./components/Files";
+import FilesList from "./components/FilesList";
 import Form from "./components/Form";
 import Video from "./components/Video";
 
@@ -15,10 +15,10 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 mb-5">
       <Form onSubmit={handleSubmit} />
       <div className="flex flex-row gap-2">
-        <Files {...{ path, selectedVideo, onVideoSelected }} />
+        <FilesList {...{ path, selectedVideo, onVideoSelected }} />
         <Video selectedVideo={selectedVideo} />
       </div>
     </div>
