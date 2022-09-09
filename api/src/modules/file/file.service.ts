@@ -8,7 +8,6 @@ export class FileService {
     return getAllFiles(
       join(process.env.STATIC_PATH, path),
       ['.mp4'],
-      [],
       process.env.STATIC_PATH,
     );
   }

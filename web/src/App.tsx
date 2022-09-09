@@ -17,7 +17,7 @@ function App() {
   return (
     <div className="container mx-auto px-4">
       <Form onSubmit={handleSubmit} />
-      <div className="flex flex-row">
+      <div className="flex flex-row gap-2">
         <Files {...{ path, selectedVideo, onVideoSelected }} />
         <Video selectedVideo={selectedVideo} />
       </div>

@@ -41,8 +41,8 @@ const getFileInfo = (
 export const getAllFiles = (
   dirPath: string,
   extension: string[],
-  arrayOfFiles?: File[],
   originalPath?: string,
+  arrayOfFiles?: File[],
 ) => {
   if (!fs.existsSync(dirPath)) {
     return [];
@@ -56,8 +56,8 @@ export const getAllFiles = (
       arrayOfFiles = getAllFiles(
         path.join(dirPath, fnd),
         extension,
-        arrayOfFiles,
         originalPath || dirPath,
+        arrayOfFiles,
       );
     } else {
       const file = path.join(dirPath, fnd);
@@ -68,5 +68,7 @@ export const getAllFiles = (
     }
   });
 
-  return arrayOfFiles;
+  return arrayOfFiles.sort(
+    (file1, file2) => file1.birthtime.getTime() - file2.birthtime.getTime(),
+  );
 };
