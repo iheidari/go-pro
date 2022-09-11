@@ -11,6 +11,10 @@ concat video
 ffmpeg -i ./data/${file} -c copy -bsf:v h264_mp4toannexb -f mpegts ./out/${file}.ts
 ffmpeg -i "concat:${\_FILES.join("|")}" -c copy -bsf:a aac_adtstoasc output.mp4
 
+ffmpeg -f concat -safe 0 -i a.txt -map 0:0 -map 0:1 -map 0:2 -map 0:3 -c copy output.mp4 -ignore_unknown
+a.text:
+file '[file-address]'
+
 add watermark
 ffmpeg -i output.mp4 -i iman.png -filter_complex "overlay=10:10" watermarket.mp4
 https://gist.github.com/bennylope/d5d6029fb63648582fed2367ae23cfd6

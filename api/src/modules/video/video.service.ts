@@ -7,12 +7,18 @@ import {
   getServerPath,
   rawGps5Convertor,
   stripTelemetry,
+  mergeVideos,
 } from './util';
 import * as gpmfExtract from 'gpmf-extract';
 import * as goproTelemetry from 'gopro-telemetry';
 
 @Injectable()
 export class VideoService {
+  runningProcess = {};
+
+  getProcess(id: string) {
+    return this.runningProcess[id];
+  }
   async getCuts(fileUri: string) {
     try {
       const dataFileName = getDataFileName(fileUri);
@@ -51,6 +57,13 @@ export class VideoService {
       return { status: HttpStatus.NOT_FOUND, message: 'file not found' };
     }
     const tempStripedTelemetryFile = await stripTelemetry(fileName);
+    if (!tempStripedTelemetryFile) {
+      console.error('GPS data extraction failed');
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        message: 'gps extraction failed',
+      };
+    }
     try {
       const dataFileName = getDataFileName(fileUri);
       const dataFileExists = await checkFileExists(dataFileName);
@@ -88,5 +101,30 @@ export class VideoService {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
       message: 'server error',
     };
+  }
+
+  mergeVideos(filesUri: string[], outputFileName: string) {
+    if (filesUri.length < 2) {
+      return -1;
+    }
+    const operationId = new Date().getTime();
+    try {
+      const filesName = filesUri.map((fileUri) => getServerPath(fileUri));
+      this.runningProcess[operationId] = 'running';
+      mergeVideos(filesName, outputFileName, operationId)
+        .then(() => {
+          this.runningProcess[operationId] = 'finished';
+        })
+        .catch((exception) => {
+          console.error(`Exception for mergeVideo, OID: ${operationId}`);
+          console.error(exception);
+          this.runningProcess[operationId] = 'exception';
+        });
+    } catch (exception) {
+      console.error(`Exception for mergeVideo, OID: ${operationId}`);
+      console.error(exception);
+      this.runningProcess[operationId] = 'exception';
+    }
+    return operationId;
   }
 }
