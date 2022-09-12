@@ -21,8 +21,9 @@ const Video = ({ selectedVideo }: VideoProps) => {
     const saveCuts = async (file: string, cuts: ICuts[]) => {
       await api.post(`/video/cuts`, { file, cuts });
     };
-    if (selectedVideo && state.videoCuts[selectedVideo])
+    if (selectedVideo && state.videoCuts[selectedVideo]) {
       saveCuts(selectedVideo, state.videoCuts[selectedVideo]);
+    }
   }, [selectedVideo, state.videoCuts]);
 
   useEffect(() => {
@@ -32,12 +33,22 @@ const Video = ({ selectedVideo }: VideoProps) => {
         dispatch({ type: "setCuts", payload: { file, cuts: response.data } });
       }
     };
-    if (selectedVideo) {
-      getCuts(selectedVideo);
-    }
+
+    const getGps = async (file: string) => {
+      const response = await api.get(`/video/telemetry?file=${file}`);
+      if (response.status === 200) {
+        dispatch({ type: "setGps", payload: { gps: response.data } });
+        return;
+      }
+    };
     // reset gps data
     dispatch({ type: "setGps", payload: { gps: [] } });
     setCurrentFrame(0);
+
+    if (selectedVideo) {
+      getCuts(selectedVideo);
+      getGps(selectedVideo);
+    }
   }, [selectedVideo]);
 
   const handleTimeUpdate = (event: any) => {

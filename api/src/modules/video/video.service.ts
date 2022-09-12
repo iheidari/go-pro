@@ -33,15 +33,20 @@ export class VideoService {
   }
   async getTelemetry(fileUri: string) {
     const dataFileName = util.getGpsFileName(fileUri);
-    const gpsData = await data.read(dataFileName, 'gps');
-    if (gpsData) {
+    const rawGpsData = await data.read(dataFileName, 'gps');
+    if (rawGpsData) {
+      const gpsData = util.rawGps5Convertor(rawGpsData);
       return {
         status: HttpStatus.OK,
         message: 'gps data retrived',
         data: gpsData,
       };
     }
-    return { status: HttpStatus.NO_CONTENT, message: 'no gps data retrived' };
+    return {
+      status: HttpStatus.NO_CONTENT,
+      message: 'no gps data retrived',
+      data: [],
+    };
   }
 
   async saveTelemetry(fileUri: string) {

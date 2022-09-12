@@ -10,7 +10,7 @@ type Props = {
 };
 
 const Header = ({ selectedVideo, state, dispatch }: Props) => {
-  const { autoPlay } = state;
+  const { autoPlay, gps } = state;
   const [loading, setLoading] = useState<boolean>(false);
   const handleGetGps = async () => {
     if (selectedVideo) {
@@ -20,7 +20,7 @@ const Header = ({ selectedVideo, state, dispatch }: Props) => {
       });
       setLoading(false);
       if (response.status === 200 || response.status === 201) {
-        dispatch({ type: "setGps", payload: { gps: response.data.data } });
+        dispatch({ type: "setGps", payload: { gps: response.data } });
         return;
       }
       return alert("Failed: " + response.status);
@@ -49,6 +49,7 @@ const Header = ({ selectedVideo, state, dispatch }: Props) => {
         <Button
           onClick={handleGetGps}
           label={loading ? "Loading..." : "Get GPS"}
+          disabled={gps && gps.length > 0}
         />
       </div>
     </div>
