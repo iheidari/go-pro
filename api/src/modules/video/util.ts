@@ -11,6 +11,9 @@ export const getServerPath = (fileUri: string) => {
 export const getDataFileName = (file: string) => {
   return getServerPath(file) + '.json';
 };
+export const getGpsFileName = (file: string) => {
+  return getServerPath(file) + '.gps.json';
+};
 
 export function checkFileExists(file: string) {
   return fs.promises
@@ -62,11 +65,10 @@ export const createVideoListFile = (
 
 export const mergeVideos = (
   fileNames: string[],
-  outputFileName: string,
+  outputFile: string,
   operationId: number,
 ) => {
   const directory = path.dirname(fileNames[0]);
-  const outputFile = path.join(directory, outputFileName);
   const videoFileListname = path.join(directory, operationId + '.txt');
   createVideoListFile(fileNames, videoFileListname);
 

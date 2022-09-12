@@ -40,6 +40,12 @@ export class VideoController {
     return res.status(response.status).json(response);
   }
 
+  @Get('/telemetry')
+  async getTelemetry(@Query('file') file) {
+    console.log(`Get:video/telemetry, file=${file}`);
+    const response = await this.videoService.getTelemetry(file);
+    return response;
+  }
   @Post('/merge')
   mergeVideos(
     @Body('files') files,
