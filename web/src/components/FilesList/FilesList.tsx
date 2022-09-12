@@ -20,46 +20,6 @@ const FilesList = ({ path, selectedVideo, onVideoSelected }: FileListProps) => {
     retrieveFiles();
   }, [path]);
 
-  const [groupFiles, setGroupFiles] = useState<string[]>([]);
-
-  const handleGroupAdd = () => {
-    if (selectedVideo && !groupFiles.includes(selectedVideo)) {
-      setGroupFiles((groupFiles) => [...groupFiles, selectedVideo]);
-    }
-  };
-
-  const handleGroupRemove = (file: string) => {
-    setGroupFiles((groupFiles) =>
-      groupFiles.filter((groupFile) => groupFile !== file)
-    );
-  };
-
-  const handleUp = (file: string) => {
-    const index = groupFiles.indexOf(file);
-    if (index > 0) {
-      const newGroupFile = [...groupFiles];
-
-      const temp = newGroupFile[index - 1];
-      newGroupFile[index - 1] = file;
-      newGroupFile[index] = temp;
-
-      setGroupFiles(newGroupFile);
-    }
-  };
-
-  const handleDown = (file: string) => {
-    const index = groupFiles.indexOf(file);
-    if (index > -1 && index !== groupFiles.length - 1) {
-      const newGroupFile = [...groupFiles];
-
-      const temp = newGroupFile[index + 1];
-      newGroupFile[index + 1] = file;
-      newGroupFile[index] = temp;
-
-      setGroupFiles(newGroupFile);
-    }
-  };
-
   return (
     <div className="w-2/5">
       <Files
@@ -67,14 +27,7 @@ const FilesList = ({ path, selectedVideo, onVideoSelected }: FileListProps) => {
         onVideoSelected={onVideoSelected}
         selectedVideo={selectedVideo}
       />
-      <Group
-        files={groupFiles}
-        onAdd={handleGroupAdd}
-        onRemove={handleGroupRemove}
-        onUp={handleUp}
-        onDown={handleDown}
-        onFileSelected={onVideoSelected}
-      />
+      <Group selectedVideo={selectedVideo} onFileSelected={onVideoSelected} />
     </div>
   );
 };

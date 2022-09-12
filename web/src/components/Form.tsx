@@ -1,4 +1,5 @@
-import React, { FormEvent } from "react";
+import { FormEvent } from "react";
+import Textbox from "./Basic/Textbox";
 
 type Props = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -6,11 +7,10 @@ type Props = {
 
 const Form = (props: Props) => {
   return (
-    <form onSubmit={props.onSubmit} className="my-2">
-      <input
-        name="path"
-        className="shadow appearance-none border rounded py-2 px-3 mr-2 w-96 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-      />
+    <form onSubmit={props.onSubmit} className="my-2 flex gap-2">
+      <div className="w-96">
+        <Textbox name="path" />
+      </div>
       <input
         type="submit"
         value="Submit"
