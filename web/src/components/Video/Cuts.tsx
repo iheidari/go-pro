@@ -1,6 +1,8 @@
-import { Dispatch } from "react";
+import { Dispatch, useState } from "react";
+import Button from "../Basic/Button";
 import { IVideoActions, IVideoState } from "./reducer";
 import Time from "./Time";
+import api from "../../api";
 
 export interface ICuts {
   start: number;
@@ -15,6 +17,7 @@ type CutsProps = {
 };
 
 const Cuts = ({ selectedVideo, videoElement, state, dispatch }: CutsProps) => {
+  const [loading, setLoading] = useState(false);
   if (!selectedVideo) {
     return <div className="my-2 h-12"></div>;
   }
@@ -55,6 +58,21 @@ const Cuts = ({ selectedVideo, videoElement, state, dispatch }: CutsProps) => {
       videoElement.currentTime = time;
     }
   };
+  const handleApplyCuts = async () => {
+    if (cuts.length) {
+      setLoading(true);
+      try {
+        const response = await api.post(`/video/cuts/apply`, {
+          file: selectedVideo,
+          cuts,
+        });
+        console.log("🚀 OID ", response.data);
+      } catch (error) {
+        console.log("🚀 error applying cuts", error);
+      }
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -82,13 +100,20 @@ const Cuts = ({ selectedVideo, videoElement, state, dispatch }: CutsProps) => {
           ))}
         </div>
         {cuts.length > 0 && (
-          <button
-            onClick={handleDelete}
-            className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
-            title="Delete last cut"
-          >
-            {"<-"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleDelete}
+              className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
+              title="Delete last cut"
+            >
+              {"<-"}
+            </button>
+            <Button
+              label="Apply"
+              onClick={handleApplyCuts}
+              isLoading={loading}
+            />
+          </div>
         )}
       </div>
       <div className="text-red-700">{error}</div>

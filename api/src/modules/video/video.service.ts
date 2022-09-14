@@ -6,14 +6,10 @@ import * as util from './util';
 import * as gpmfExtract from 'gpmf-extract';
 import * as goproTelemetry from 'gopro-telemetry';
 import * as data from 'src/services/data';
+import { TaskService } from '../task/task.service';
 
 @Injectable()
 export class VideoService {
-  runningProcess = {};
-
-  getProcess(id: string) {
-    return this.runningProcess[id];
-  }
   async getCuts(fileUri: string) {
     try {
       const dataFileName = util.getDataFileName(fileUri);
@@ -31,6 +27,25 @@ export class VideoService {
       throw err;
     }
   }
+
+  async applyCuts(fileUri: string, cuts: Cut[], taskService: TaskService) {
+    const operationId = taskService.startTask();
+    try {
+      const fileName = util.getServerPath(fileUri);
+      util
+        .cutVideo(fileName, cuts, operationId)
+        .then(() => {
+          taskService.finishTask(operationId);
+        })
+        .catch((error) => {
+          taskService.errorTask(operationId, error);
+        });
+    } catch (error) {
+      taskService.errorTask(operationId, error);
+    }
+    return operationId;
+  }
+
   async getTelemetry(fileUri: string) {
     const dataFileName = util.getGpsFileName(fileUri);
     const rawGpsData = await data.read(dataFileName, 'gps');
@@ -103,14 +118,16 @@ export class VideoService {
     };
   }
 
-  mergeVideos(filesUri: string[], outputFileName: string) {
+  mergeVideos(
+    filesUri: string[],
+    outputFileName: string,
+    taskService: TaskService,
+  ) {
     if (filesUri.length < 2) {
       return -1;
     }
-    const operationId = new Date().getTime();
-
+    const operationId = taskService.startTask();
     try {
-      this.runningProcess[operationId] = 'running';
       const filesName = filesUri.map((fileUri) => util.getServerPath(fileUri));
       const directory = path.dirname(filesName[0]);
       const outputFile = path.join(directory, outputFileName);
@@ -123,17 +140,13 @@ export class VideoService {
           return data.write(outputFile + '.json', 'merge', filesName);
         })
         .then(() => {
-          this.runningProcess[operationId] = 'finished';
+          taskService.finishTask(operationId);
         })
         .catch((exception) => {
-          console.error(`Exception for mergeVideo, OID: ${operationId}`);
-          console.error(exception);
-          this.runningProcess[operationId] = 'exception';
+          taskService.errorTask(operationId, exception);
         });
     } catch (exception) {
-      console.error(`Exception for mergeVideo, OID: ${operationId}`);
-      console.error(exception);
-      this.runningProcess[operationId] = 'exception';
+      taskService.errorTask(operationId, exception);
     }
     return operationId;
   }

@@ -6,20 +6,17 @@ import {
   Body,
   Res,
   HttpStatus,
-  Param,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { TaskService } from '../task/task.service';
 import { VideoService } from './video.service';
 
 @Controller('video')
 export class VideoController {
-  constructor(private readonly videoService: VideoService) {}
-
-  @Get('/process/:id')
-  getProcess(@Param() params) {
-    console.log(`Get:/process${params.id}`);
-    return this.videoService.getProcess(params.id);
-  }
+  constructor(
+    private readonly videoService: VideoService,
+    private readonly taskService: TaskService,
+  ) {}
 
   @Get('/cuts')
   getCuts(@Query('file') file) {
@@ -31,6 +28,12 @@ export class VideoController {
   saveCuts(@Body('file') file, @Body('cuts') cuts) {
     console.log(`Post:video/cuts, file=${file} cuts=${cuts.length}`);
     return this.videoService.saveCuts(file, cuts);
+  }
+
+  @Post('/cuts/apply')
+  applyCuts(@Body('file') file, @Body('cuts') cuts) {
+    console.log(`Post:video/cuts/apply, file=${file} cuts=${cuts.length}`);
+    return this.videoService.applyCuts(file, cuts, this.taskService);
   }
 
   @Post('/telemetry')
@@ -53,7 +56,11 @@ export class VideoController {
     @Res() res: Response,
   ) {
     console.log(`Post:video/telemetry, file=${files.length}`);
-    const operationId = this.videoService.mergeVideos(files, outputFileName);
+    const operationId = this.videoService.mergeVideos(
+      files,
+      outputFileName,
+      this.taskService,
+    );
     return res.status(HttpStatus.ACCEPTED).json({ operationId });
   }
 }

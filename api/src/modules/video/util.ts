@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as ffprobe from 'ffprobe';
 import { asyncExec } from '../../../util/exec';
 import { unlink } from 'fs/promises';
+import { Cut } from './type';
 
 export const getServerPath = (fileUri: string) => {
   return process.env.STATIC_PATH + fileUri;
@@ -76,4 +77,32 @@ export const mergeVideos = (
   return asyncExec(command).then(async () => {
     await unlink(videoFileListname);
   });
+};
+
+export function cutVideo(fileName: string, cuts: Cut[], operationId: number) {
+  const files = [];
+  const tasks = cuts.map((cut, index) => {
+    const file = fileName + operationId + '_' + index + '.MP4';
+    const command = `ffmpeg -ss ${formatSeconds(cut.start)} -to ${formatSeconds(
+      cut.end,
+    )} -i ${fileName} -map 0:0 -map 0:1 -map 0:3 -c copy ${file} -ignore_unknown`;
+    files.push(file);
+    return asyncExec(command);
+  });
+  console.log('cuts done');
+  return Promise.all(tasks)
+    .then(() => {
+      return mergeVideos(files, fileName + '.all.MP4', operationId);
+    })
+    .then(() => {
+      files.forEach((file) => unlink(file));
+    });
+}
+
+const twoDigits = (num: number): string =>
+  num < 10 ? `0${num}` : num.toString();
+
+const formatSeconds = (seconds: number): string => {
+  const round = Math.round(seconds);
+  return `${twoDigits(Math.floor(round / 60))}:${twoDigits(round % 60)}`;
 };
