@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as ffprobe from 'ffprobe';
+import * as ffprobStatic from 'ffprobe-static';
 import { asyncExec } from '../../../util/exec';
 import { unlink } from 'fs/promises';
 import { Cut } from './type';
@@ -25,7 +26,7 @@ export function checkFileExists(file: string) {
 
 export async function stripTelemetry(file: string) {
   try {
-    const result = await ffprobe(file, { path: '/opt/homebrew/bin/ffprobe' });
+    const result = await ffprobe(file, { path: ffprobStatic.path });
     const stream = result.streams.find(
       (stream) => stream.codec_tag_string === 'gpmd',
     );

@@ -19,6 +19,7 @@ specifiers:
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
   ffprobe: ^1.1.2
+  ffprobe-static: ^3.1.0
   gopro-telemetry: ^1.1.37
   gpmf-extract: ^0.2.5
   jest: 28.1.2
@@ -42,6 +43,7 @@ dependencies:
   '@nestjs/platform-express': 9.0.8_cw6o3dkuyuli4a5gq7b223evly
   '@nestjs/serve-static': 3.0.0_cw6o3dkuyuli4a5gq7b223evly
   ffprobe: 1.1.2
+  ffprobe-static: 3.1.0
   gopro-telemetry: 1.1.37
   gpmf-extract: 0.2.5
   reflect-metadata: 0.1.13
@@ -2577,6 +2579,10 @@ packages:
     dependencies:
       bser: 2.1.1
     dev: true
+
+  /ffprobe-static/3.1.0:
+    resolution: {integrity: sha512-Dvpa9uhVMOYivhHKWLGDoa512J751qN1WZAIO+Xw4L/mrUSPxS4DApzSUDbCFE/LUq2+xYnznEahTd63AqBSpA==}
+    dev: false
 
   /ffprobe/1.1.2:
     resolution: {integrity: sha512-a+oTbhyeM7Z8PRy+mpzmVUAnATZT7z4BO94HSKeqHupdmjiKZ1djzcZkyoyXA21zCOCG7oVRrsBMmvvtmzoz4g==}

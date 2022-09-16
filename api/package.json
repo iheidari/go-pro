@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/serve-static": "^3.0.0",
     "ffprobe": "^1.1.2",
+    "ffprobe-static": "^3.1.0",
     "gopro-telemetry": "^1.1.37",
     "gpmf-extract": "^0.2.5",
     "reflect-metadata": "^0.1.13",
