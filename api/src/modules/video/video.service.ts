@@ -150,4 +150,18 @@ export class VideoService {
     }
     return operationId;
   }
+
+  deleteVideo(fileUri: string, taskService: TaskService) {
+    const operationId = taskService.startTask();
+    try {
+      const fileName = util.getServerPath(fileUri);
+      unlink(fileName).then(() => {
+        taskService.finishTask(operationId);
+      });
+    } catch (error) {
+      taskService.errorTask(operationId, error);
+    }
+
+    return operationId;
+  }
 }

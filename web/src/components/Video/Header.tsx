@@ -1,4 +1,4 @@
-import React, { Dispatch, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { IVideoActions, IVideoState } from "./reducer";
 import api from "../../api";
 import Button from "../Basic/Button";
@@ -11,14 +11,15 @@ type Props = {
 
 const Header = ({ selectedVideo, state, dispatch }: Props) => {
   const { autoPlay, gps } = state;
-  const [loading, setLoading] = useState<boolean>(false);
+  const [gpsLoading, setGpsLoading] = useState<boolean>(false);
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const handleGetGps = async () => {
     if (selectedVideo) {
-      setLoading(true);
+      setGpsLoading(true);
       const response = await api.post(`/video/telemetry`, {
         file: selectedVideo,
       });
-      setLoading(false);
+      setGpsLoading(false);
       if (response.status === 200 || response.status === 201) {
         dispatch({ type: "setGps", payload: { gps: response.data } });
         return;
@@ -31,6 +32,14 @@ const Header = ({ selectedVideo, state, dispatch }: Props) => {
       type: "setAutoPlay",
       payload: { autoPlay: !!event.currentTarget.checked },
     });
+  };
+
+  const handleDeleteVideo = async () => {
+    if (selectedVideo) {
+      setDeleteLoading(true);
+      await api.delete(`/video/delete?file=${selectedVideo}`);
+      setDeleteLoading(false);
+    }
   };
   return (
     <div className="mb-2 flex items-center gap-2">
@@ -45,14 +54,47 @@ const Header = ({ selectedVideo, state, dispatch }: Props) => {
           Auto play
         </label>
       </div>
-      <div>
-        <Button
-          onClick={handleGetGps}
-          label={loading ? "Loading..." : "Get GPS"}
-          disabled={gps && gps.length > 0}
-        />
-      </div>
+      <Button
+        onClick={handleGetGps}
+        label={gpsLoading ? "Loading..." : "Get GPS"}
+        disabled={!selectedVideo || (gps && gps.length > 0)}
+      />
+      <DeleteButton
+        onClick={handleDeleteVideo}
+        loading={deleteLoading}
+        selectedVideo={selectedVideo}
+      />
     </div>
+  );
+};
+
+const DeleteButton = ({
+  onClick,
+  selectedVideo,
+  loading,
+}: {
+  onClick: () => void;
+  selectedVideo?: string;
+  loading?: boolean;
+}) => {
+  const [confirm, setConfirm] = useState(false);
+  useEffect(() => {
+    setConfirm(false);
+  }, [selectedVideo]);
+  const handleDeleteVideo = () => {
+    if (confirm) {
+      onClick();
+      setConfirm(false);
+      return;
+    }
+    setConfirm(true);
+  };
+  return (
+    <Button
+      onClick={handleDeleteVideo}
+      label={loading ? "Loading..." : confirm ? "Sure?" : "Delete"}
+      disabled={!selectedVideo}
+    />
   );
 };
 

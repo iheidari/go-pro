@@ -6,6 +6,7 @@ import {
   Body,
   Res,
   HttpStatus,
+  Delete,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { TaskService } from '../task/task.service';
@@ -61,6 +62,12 @@ export class VideoController {
       outputFileName,
       this.taskService,
     );
+    return res.status(HttpStatus.ACCEPTED).json({ operationId });
+  }
+  @Delete('/delete')
+  deleteVideo(@Query('file') file, @Res() res: Response) {
+    console.log(`Post:video/delete?file=${file}`);
+    const operationId = this.videoService.deleteVideo(file, this.taskService);
     return res.status(HttpStatus.ACCEPTED).json({ operationId });
   }
 }
