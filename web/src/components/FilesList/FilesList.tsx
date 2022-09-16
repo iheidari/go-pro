@@ -1,25 +1,18 @@
-import { useEffect, useState } from "react";
-import api from "../../api";
 import Group from "../Group";
 import Files from "./Files";
+import { FileType } from "./type";
 
 interface FileListProps {
-  path?: string;
+  files: FileType[];
   selectedVideo?: string;
   onVideoSelected: (file: string) => void;
 }
 
-const FilesList = ({ path, selectedVideo, onVideoSelected }: FileListProps) => {
-  const [files, setFiles] = useState([]);
-
-  useEffect(() => {
-    const retrieveFiles = async () => {
-      const response = await api.get(`/file?path=${path}`);
-      setFiles(response.data);
-    };
-    retrieveFiles();
-  }, [path]);
-
+const FilesList = ({
+  files,
+  selectedVideo,
+  onVideoSelected,
+}: FileListProps) => {
   return (
     <div className="w-2/5">
       <Files

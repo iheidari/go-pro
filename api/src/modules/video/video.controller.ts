@@ -56,7 +56,7 @@ export class VideoController {
     @Body('output') outputFileName,
     @Res() res: Response,
   ) {
-    console.log(`Post:video/telemetry, file=${files.length}`);
+    console.log(`Post:video/merge, file=${files.length}`);
     const operationId = this.videoService.mergeVideos(
       files,
       outputFileName,
