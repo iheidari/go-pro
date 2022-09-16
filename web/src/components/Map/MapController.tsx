@@ -4,12 +4,14 @@ import { GpsData } from "./type";
 import { getMapCenter } from "./util";
 
 interface MapControllerProps {
+  fullscreen: boolean;
   gpsData: GpsData[];
 }
 
-const MapController = ({ gpsData }: MapControllerProps) => {
+const MapController = ({ gpsData, fullscreen }: MapControllerProps) => {
   const map = useMap();
   useEffect(() => {
+    map.invalidateSize();
     if (gpsData.length > 0) {
       const { boundry, center } = getMapCenter(gpsData);
       map.setView(center);
@@ -19,7 +21,7 @@ const MapController = ({ gpsData }: MapControllerProps) => {
       ]);
       map.setZoom(zoom);
     }
-  }, [map, gpsData]);
+  }, [map, gpsData, fullscreen]);
   return null;
 };
 

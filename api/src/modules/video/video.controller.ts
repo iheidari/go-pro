@@ -50,6 +50,7 @@ export class VideoController {
     const response = await this.videoService.getTelemetry(file);
     return res.status(response.status).json(response.data);
   }
+
   @Post('/merge')
   mergeVideos(
     @Body('files') files,
@@ -64,6 +65,7 @@ export class VideoController {
     );
     return res.status(HttpStatus.ACCEPTED).json({ operationId });
   }
+
   @Delete('/delete')
   deleteVideo(@Query('file') file, @Res() res: Response) {
     console.log(`Post:video/delete?file=${file}`);
