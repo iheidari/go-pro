@@ -2,20 +2,21 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class TaskService {
-  runningProcess = {};
+  runningProcess = [];
 
   startTask(name: string) {
-    const newTask = new Date().getTime();
-    this.runningProcess[newTask] = { status: 'started', name };
-    return newTask;
+    const id = new Date().getTime();
+    this.runningProcess.push({ id, status: 'started', name });
+    return id;
   }
 
   finishTask(taskId: number) {
     console.log('Task finished, OID:' + taskId);
-    if (this.runningProcess[taskId]) {
-      this.runningProcess[taskId] = {
+    const index = this.runningProcess.findIndex((task) => task.id === taskId);
+    if (index !== -1) {
+      this.runningProcess[index] = {
         status: 'finished',
-        name: this.runningProcess[taskId].name,
+        name: this.runningProcess[index].name,
       };
     }
   }
@@ -23,17 +24,21 @@ export class TaskService {
   errorTask(taskId: number, exception: any) {
     console.error(`Exception for mergeVideo, OID: ${taskId}`);
     console.error(exception);
-    if (this.runningProcess[taskId]) {
-      this.runningProcess[taskId] = {
+    const index = this.runningProcess.findIndex((task) => task.id === taskId);
+    if (index !== -1) {
+      this.runningProcess[index] = {
         status: 'error',
-        name: this.runningProcess[taskId].name,
+        name: this.runningProcess[index].name,
       };
     }
   }
+
   getAllProcess() {
     return this.runningProcess;
   }
-  getProcess(id: string) {
-    return this.runningProcess[id];
+
+  getProcess(id: number) {
+    const index = this.runningProcess.findIndex((task) => task.id === id);
+    return this.runningProcess[index];
   }
 }
