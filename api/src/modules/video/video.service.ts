@@ -29,7 +29,7 @@ export class VideoService {
   }
 
   async applyCuts(fileUri: string, cuts: Cut[], taskService: TaskService) {
-    const operationId = taskService.startTask();
+    const operationId = taskService.startTask('Apply cuts');
     try {
       const fileName = util.getServerPath(fileUri);
       util
@@ -126,7 +126,7 @@ export class VideoService {
     if (filesUri.length < 2) {
       return -1;
     }
-    const operationId = taskService.startTask();
+    const operationId = taskService.startTask('Merge Videos');
     try {
       const filesName = filesUri.map((fileUri) => util.getServerPath(fileUri));
       const directory = path.dirname(filesName[0]);
@@ -151,10 +151,17 @@ export class VideoService {
     return operationId;
   }
 
-  deleteVideo(fileUri: string, taskService: TaskService) {
-    const operationId = taskService.startTask();
+  async deleteVideo(fileUri: string, taskService: TaskService) {
+    const operationId = taskService.startTask(`Delete ${fileUri}`);
     try {
       const fileName = util.getServerPath(fileUri);
+      const fileExists = await util.checkFileExists(fileName);
+      if (!fileExists) {
+        console.warn('File not found');
+        return -1;
+        // return { status: HttpStatus.NOT_FOUND, message: 'file not found' };
+      }
+
       unlink(fileName).then(() => {
         taskService.finishTask(operationId);
       });

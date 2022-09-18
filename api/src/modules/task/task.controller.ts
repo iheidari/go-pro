@@ -6,6 +6,13 @@ import { TaskService } from './task.service';
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  @Get('/')
+  getAllProcess(@Res() res: Response) {
+    console.log(`Get:/task`);
+    const result = this.taskService.getAllProcess();
+    return res.status(HttpStatus.OK).json(result);
+  }
+
   @Get('/:id')
   getProcess(@Param() params, @Res() res: Response) {
     console.log(`Get:/process/${params.id}`);

@@ -2,7 +2,9 @@ import { useState } from "react";
 import api from "./api";
 import FilesList from "./components/FilesList";
 import Form from "./components/Form";
+import Notification from "./components/Notification/Notification";
 import Video from "./components/Video";
+import { AppContextProvider } from "./context/appContext";
 
 function App() {
   const [files, setFiles] = useState([]);
@@ -30,13 +32,18 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto px-4 mb-5">
-      <Form onSubmit={handleSubmit} />
-      <div className="flex flex-row gap-2">
-        <FilesList {...{ files, selectedVideo, onVideoSelected }} />
-        <Video selectedVideo={selectedVideo} />
+    <AppContextProvider>
+      <div className="container mx-auto px-4 mb-5">
+        <header className="flex flex-row justify-between items-center">
+          <Form onSubmit={handleSubmit} />
+          <Notification />
+        </header>
+        <div className="flex flex-row gap-2">
+          <FilesList {...{ files, selectedVideo, onVideoSelected }} />
+          <Video selectedVideo={selectedVideo} />
+        </div>
       </div>
-    </div>
+    </AppContextProvider>
   );
 }
 

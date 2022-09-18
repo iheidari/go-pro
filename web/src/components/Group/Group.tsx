@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Button from "../Basic/Button";
 import Textbox from "../Basic/Textbox";
 import Row from "./Row";
 import api from "../../api";
+import { AppContext } from "../../context/appContext";
 
 type GroupProps = {
   selectedVideo?: string;
@@ -14,6 +15,8 @@ const Group = ({ selectedVideo, onFileSelected }: GroupProps) => {
   const [mergeFileName, setMergeFileName] = useState<string>("");
   const [isMerging, setIsMerging] = useState<boolean>(false);
   const [groupFiles, setGroupFiles] = useState<string[]>([]);
+
+  const appContext = useContext(AppContext);
 
   const handleGroupAdd = () => {
     if (selectedVideo && !groupFiles.includes(selectedVideo)) {
@@ -109,7 +112,10 @@ const Group = ({ selectedVideo, onFileSelected }: GroupProps) => {
   );
 
   const handleMergeRequest = async () => {
-    const output = mergeFileName.toLowerCase().endsWith(".mp4")
+    const output = mergeFileName
+      .replace(/ /g, "-")
+      .toLowerCase()
+      .endsWith(".mp4")
       ? mergeFileName
       : mergeFileName + ".MP4";
 
@@ -120,7 +126,13 @@ const Group = ({ selectedVideo, onFileSelected }: GroupProps) => {
         output,
       });
       setIsMerging(false);
-      console.log(response.data);
+      if (appContext) {
+        const oid = parseInt(response.data.operationId);
+        appContext.addTask(oid, () => {
+          console.log(oid, " finished");
+        });
+      }
+      console.log(response.data.operationId);
     } catch (error) {
       setIsMerging(false);
       console.error("failed request to merge videos");
