@@ -1,5 +1,5 @@
+import { FileType } from "../../context/type";
 import FileRow from "./FileRow";
-import { FileType } from "./type";
 
 type Props = {
   files: FileType[];

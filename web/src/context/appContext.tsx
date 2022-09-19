@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { AppContextProps, ITask, ITasks } from "./type";
+import { AppContextProps, FileType, IServerTask, ITask, ITasks } from "./type";
 import api from "../api";
 import {
   anyActiveTask,
@@ -15,9 +15,11 @@ interface AppContextProviderProps {
 export const AppContext = React.createContext<AppContextProps | null>(null);
 
 let intervalID: null | NodeJS.Timer = null;
+let currentRoute: null | string = null;
 
 export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [tasks, setTasks] = React.useState<ITasks>([]);
+  const [files, setFiles] = React.useState<FileType[]>([]);
   const [timerOn, setTimerOn] = React.useState<boolean>(false);
 
   useEffect(() => {
@@ -50,13 +52,35 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
     };
   }, [timerOn, tasks]);
 
-  const addTask = (task: ITask): ITasks => {
+  const addTask = (serverTask: IServerTask, onFinish?: () => void): ITasks => {
+    const { id, name, status } = serverTask;
+    const task: ITask = { id, name, status, onFinish };
     const newTasks = [...tasks, task];
     setTasks(newTasks);
     setTimerOn(true);
     return tasks;
   };
 
-  const context = { tasks, addTask };
+  const getFiles = (route?: string) => {
+    if (route) {
+      currentRoute = route;
+    }
+    if (!currentRoute) {
+      return;
+    }
+    api
+      .get(`/file?path=${currentRoute}`)
+      .then((response) => {
+        setFiles(response.data);
+      })
+      .catch((error) => {
+        console.error(
+          `Retrieving the videos for route ${currentRoute} failed.`
+        );
+        console.error(error);
+      });
+  };
+  const context = { tasks, files, addTask, getFiles };
+
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;
 };

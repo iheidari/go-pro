@@ -4,7 +4,6 @@ import Textbox from "../Basic/Textbox";
 import Row from "./Row";
 import api from "../../api";
 import { AppContext } from "../../context/appContext";
-import { ITask } from "../../context/type";
 
 type GroupProps = {
   selectedVideo?: string;
@@ -128,12 +127,10 @@ const Group = ({ selectedVideo, onFileSelected }: GroupProps) => {
       });
       setIsMerging(false);
       if (appContext) {
-        const { id, name, status } = response.data;
         const onFinish = () => {
-          console.log(id, " finished for merge");
+          appContext.getFiles();
         };
-        const task: ITask = { id, name, status, onFinish };
-        appContext.addTask(task);
+        appContext.addTask(response.data, onFinish);
       }
     } catch (error) {
       setIsMerging(false);

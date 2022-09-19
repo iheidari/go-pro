@@ -32,9 +32,10 @@ export class VideoController {
   }
 
   @Post('/cuts/apply')
-  applyCuts(@Body('file') file, @Body('cuts') cuts) {
+  applyCuts(@Body('file') file, @Body('cuts') cuts, @Res() res: Response) {
     console.log(`Post:video/cuts/apply, file=${file} cuts=${cuts.length}`);
-    return this.videoService.applyCuts(file, cuts, this.taskService);
+    const task = this.videoService.applyCuts(file, cuts, this.taskService);
+    return res.status(HttpStatus.ACCEPTED).json(task);
   }
 
   @Post('/telemetry')
@@ -69,7 +70,7 @@ export class VideoController {
   @Delete('/delete')
   deleteVideo(@Query('file') file, @Res() res: Response) {
     console.log(`Post:video/delete?file=${file}`);
-    const operationId = this.videoService.deleteVideo(file, this.taskService);
-    return res.status(HttpStatus.ACCEPTED).json({ operationId });
+    const task = this.videoService.deleteVideo(file, this.taskService);
+    return res.status(HttpStatus.ACCEPTED).json(task);
   }
 }

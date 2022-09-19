@@ -1,22 +1,22 @@
+import { useContext } from "react";
+import { AppContext } from "../../context/appContext";
 import Group from "../Group";
 import Files from "./Files";
-import { FileType } from "./type";
 
 interface FileListProps {
-  files: FileType[];
   selectedVideo?: string;
   onVideoSelected: (file: string) => void;
 }
 
-const FilesList = ({
-  files,
-  selectedVideo,
-  onVideoSelected,
-}: FileListProps) => {
+const FilesList = ({ selectedVideo, onVideoSelected }: FileListProps) => {
+  const context = useContext(AppContext);
+  if (!context) {
+    return null;
+  }
   return (
     <div className="w-2/5">
       <Files
-        files={files}
+        files={context.files}
         onVideoSelected={onVideoSelected}
         selectedVideo={selectedVideo}
       />

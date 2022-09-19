@@ -1,13 +1,22 @@
-import { FormEvent } from "react";
+import { useContext } from "react";
+import { AppContext } from "../context/appContext";
 import Textbox from "./Basic/Textbox";
 
-type Props = {
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
-};
-
-const Form = (props: Props) => {
+const Form = () => {
+  const context = useContext(AppContext);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const route = (event.target as any)["path"].value;
+    // no empty route
+    if (!route) {
+      return;
+    }
+    if (context) {
+      context.getFiles(route);
+    }
+  };
   return (
-    <form onSubmit={props.onSubmit} className="my-2 flex gap-2">
+    <form onSubmit={handleSubmit} className="my-2 flex gap-2">
       <div className="w-96">
         <Textbox name="path" />
       </div>

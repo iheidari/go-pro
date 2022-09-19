@@ -28,7 +28,7 @@ export class VideoService {
     }
   }
 
-  async applyCuts(fileUri: string, cuts: Cut[], taskService: TaskService) {
+  applyCuts(fileUri: string, cuts: Cut[], taskService: TaskService) {
     const task = taskService.startTask('Apply cuts');
     try {
       const fileName = util.getServerPath(fileUri);
@@ -151,19 +151,20 @@ export class VideoService {
     return task;
   }
 
-  async deleteVideo(fileUri: string, taskService: TaskService) {
+  deleteVideo(fileUri: string, taskService: TaskService) {
     const task = taskService.startTask(`Delete ${fileUri}`);
     try {
       const fileName = util.getServerPath(fileUri);
-      const fileExists = await util.checkFileExists(fileName);
-      if (!fileExists) {
-        console.warn('File not found');
-        return -1;
-        // return { status: HttpStatus.NOT_FOUND, message: 'file not found' };
-      }
+      util.checkFileExists(fileName).then((fileExists) => {
+        if (!fileExists) {
+          console.warn('File not found');
+          return -1;
+          // return { status: HttpStatus.NOT_FOUND, message: 'file not found' };
+        }
 
-      unlink(fileName).then(() => {
-        taskService.finishTask(task.id);
+        unlink(fileName).then(() => {
+          taskService.finishTask(task.id);
+        });
       });
     } catch (error) {
       taskService.errorTask(task.id, error);
