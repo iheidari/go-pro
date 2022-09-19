@@ -1,4 +1,4 @@
-import { FileType } from "./type";
+import { FileType } from "../../context/type";
 import { bytesToSize } from "./util";
 
 interface FileRowProps {

@@ -1,8 +1,9 @@
-import { Dispatch, useState } from "react";
+import { Dispatch, useContext, useState } from "react";
 import Button from "../Basic/Button";
 import { IVideoActions, IVideoState } from "./reducer";
 import Time from "./Time";
 import api from "../../api";
+import { AppContext } from "../../context/appContext";
 
 export interface ICuts {
   start: number;
@@ -17,6 +18,7 @@ type CutsProps = {
 };
 
 const Cuts = ({ selectedVideo, videoElement, state, dispatch }: CutsProps) => {
+  const context = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   if (!selectedVideo) {
     return <div className="my-2 h-12"></div>;
@@ -58,15 +60,19 @@ const Cuts = ({ selectedVideo, videoElement, state, dispatch }: CutsProps) => {
       videoElement.currentTime = time;
     }
   };
+
   const handleApplyCuts = async () => {
-    if (cuts.length) {
+    if (cuts.length && context) {
       setLoading(true);
       try {
         const response = await api.post(`/video/cuts/apply`, {
           file: selectedVideo,
           cuts,
         });
-        console.log("🚀 OID ", response.data);
+        const onFinish = () => {
+          context.getFiles();
+        };
+        context.addTask(response.data, onFinish);
       } catch (error) {
         console.log("🚀 error applying cuts", error);
       }

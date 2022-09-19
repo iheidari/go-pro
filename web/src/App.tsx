@@ -1,5 +1,4 @@
 import { useState } from "react";
-import api from "./api";
 import FilesList from "./components/FilesList";
 import Form from "./components/Form";
 import Notification from "./components/Notification/Notification";
@@ -7,26 +6,7 @@ import Video from "./components/Video";
 import { AppContextProvider } from "./context/appContext";
 
 function App() {
-  const [files, setFiles] = useState([]);
-
   const [selectedVideo, setSelectedVideo] = useState<string | undefined>();
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const path = (event.target as any)["path"].value;
-    // no empty path
-    if (!path) {
-      return;
-    }
-    try {
-      const response = await api.get(`/file?path=${path}`);
-      setFiles(response.data);
-    } catch (error) {
-      console.error("Retrieving the videos failed.");
-      console.error(error);
-    }
-  };
-
   const onVideoSelected = (file: string) => {
     setSelectedVideo(file);
   };
@@ -35,11 +15,11 @@ function App() {
     <AppContextProvider>
       <div className="container mx-auto px-4 mb-5">
         <header className="flex flex-row justify-between items-center">
-          <Form onSubmit={handleSubmit} />
+          <Form />
           <Notification />
         </header>
         <div className="flex flex-row gap-2">
-          <FilesList {...{ files, selectedVideo, onVideoSelected }} />
+          <FilesList {...{ selectedVideo, onVideoSelected }} />
           <Video selectedVideo={selectedVideo} />
         </div>
       </div>

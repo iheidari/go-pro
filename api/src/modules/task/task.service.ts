@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { ITask } from './type';
 
 @Injectable()
 export class TaskService {
-  runningProcess = [];
+  runningProcess: ITask[] = [];
 
-  startTask(name: string) {
+  startTask(name: string): ITask {
     const id = new Date().getTime();
-    this.runningProcess.push({ id, status: 'started', name });
-    return id;
+    const task: ITask = { id, status: 'started', name };
+    this.runningProcess.push(task);
+    return task;
   }
 
   finishTask(taskId: number) {
@@ -15,8 +17,8 @@ export class TaskService {
     const index = this.runningProcess.findIndex((task) => task.id === taskId);
     if (index !== -1) {
       this.runningProcess[index] = {
+        ...this.runningProcess[index],
         status: 'finished',
-        name: this.runningProcess[index].name,
       };
     }
   }
@@ -27,17 +29,17 @@ export class TaskService {
     const index = this.runningProcess.findIndex((task) => task.id === taskId);
     if (index !== -1) {
       this.runningProcess[index] = {
+        ...this.runningProcess[index],
         status: 'error',
-        name: this.runningProcess[index].name,
       };
     }
   }
 
-  getAllProcess() {
+  getAllProcess(): ITask[] {
     return this.runningProcess;
   }
 
-  getProcess(id: number) {
+  getProcess(id: number): ITask {
     const index = this.runningProcess.findIndex((task) => task.id === id);
     return this.runningProcess[index];
   }

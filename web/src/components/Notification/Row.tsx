@@ -13,20 +13,18 @@ function getIcon(task: ITask) {
       return <Success />;
   }
 }
-const Row = ({
-  id,
-  task,
-  className,
-}: {
-  id: number;
+
+interface RowProps {
   task: ITask;
   className?: string;
-}) => {
+}
+
+const Row = ({ task, className }: RowProps) => {
   const icon = getIcon(task);
   return (
     <div className={className + " flex gap-1"}>
       <div className="w-6">{icon}</div>
-      {task.name || id}
+      {task.name}
     </div>
   );
 };

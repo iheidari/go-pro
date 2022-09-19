@@ -5,18 +5,16 @@ import Bell from "../Icons/Bell";
 import BellRinging from "../Icons/BellRinging";
 import Popup from "./Popup";
 
-type Props = {};
-
-const Notification = (props: Props) => {
+const Notification = () => {
   const context = useContext(AppContext);
   const [showPopup, setShowPopup] = useState(false);
-  if (context && anyActiveTask(context.tasks)) {
+  if (context) {
     return (
       <div
         className="w-6 h-6 z-10 cursor-pointer"
         onClick={() => setShowPopup((value) => !value)}
       >
-        <BellRinging />
+        {anyActiveTask(context.tasks) ? <BellRinging /> : <Bell />}
         {showPopup && <Popup tasks={context.tasks} />}
       </div>
     );

@@ -28,22 +28,22 @@ export class VideoService {
     }
   }
 
-  async applyCuts(fileUri: string, cuts: Cut[], taskService: TaskService) {
-    const operationId = taskService.startTask('Apply cuts');
+  applyCuts(fileUri: string, cuts: Cut[], taskService: TaskService) {
+    const task = taskService.startTask('Apply cuts');
     try {
       const fileName = util.getServerPath(fileUri);
       util
-        .cutVideo(fileName, cuts, operationId)
+        .cutVideo(fileName, cuts, task.id)
         .then(() => {
-          taskService.finishTask(operationId);
+          taskService.finishTask(task.id);
         })
         .catch((error) => {
-          taskService.errorTask(operationId, error);
+          taskService.errorTask(task.id, error);
         });
     } catch (error) {
-      taskService.errorTask(operationId, error);
+      taskService.errorTask(task.id, error);
     }
-    return operationId;
+    return task;
   }
 
   async getTelemetry(fileUri: string) {
@@ -126,13 +126,13 @@ export class VideoService {
     if (filesUri.length < 2) {
       return -1;
     }
-    const operationId = taskService.startTask('Merge Videos');
+    const task = taskService.startTask('Merge Videos');
     try {
       const filesName = filesUri.map((fileUri) => util.getServerPath(fileUri));
       const directory = path.dirname(filesName[0]);
       const outputFile = path.join(directory, outputFileName);
       util
-        .mergeVideos(filesName, outputFile, operationId)
+        .mergeVideos(filesName, outputFile, task.id)
         .then(() => {
           // TODO: no hard coding data file path
           // Challenge: we don't have the relative address for data file
@@ -140,35 +140,36 @@ export class VideoService {
           return data.write(outputFile + '.json', 'merge', filesName);
         })
         .then(() => {
-          taskService.finishTask(operationId);
+          taskService.finishTask(task.id);
         })
         .catch((exception) => {
-          taskService.errorTask(operationId, exception);
+          taskService.errorTask(task.id, exception);
         });
     } catch (exception) {
-      taskService.errorTask(operationId, exception);
+      taskService.errorTask(task.id, exception);
     }
-    return operationId;
+    return task;
   }
 
-  async deleteVideo(fileUri: string, taskService: TaskService) {
-    const operationId = taskService.startTask(`Delete ${fileUri}`);
+  deleteVideo(fileUri: string, taskService: TaskService) {
+    const task = taskService.startTask(`Delete ${fileUri}`);
     try {
       const fileName = util.getServerPath(fileUri);
-      const fileExists = await util.checkFileExists(fileName);
-      if (!fileExists) {
-        console.warn('File not found');
-        return -1;
-        // return { status: HttpStatus.NOT_FOUND, message: 'file not found' };
-      }
+      util.checkFileExists(fileName).then((fileExists) => {
+        if (!fileExists) {
+          console.warn('File not found');
+          return -1;
+          // return { status: HttpStatus.NOT_FOUND, message: 'file not found' };
+        }
 
-      unlink(fileName).then(() => {
-        taskService.finishTask(operationId);
+        unlink(fileName).then(() => {
+          taskService.finishTask(task.id);
+        });
       });
     } catch (error) {
-      taskService.errorTask(operationId, error);
+      taskService.errorTask(task.id, error);
     }
 
-    return operationId;
+    return task;
   }
 }

@@ -127,12 +127,11 @@ const Group = ({ selectedVideo, onFileSelected }: GroupProps) => {
       });
       setIsMerging(false);
       if (appContext) {
-        const oid = parseInt(response.data.operationId);
-        appContext.addTask(oid, () => {
-          console.log(oid, " finished");
-        });
+        const onFinish = () => {
+          appContext.getFiles();
+        };
+        appContext.addTask(response.data, onFinish);
       }
-      console.log(response.data.operationId);
     } catch (error) {
       setIsMerging(false);
       console.error("failed request to merge videos");

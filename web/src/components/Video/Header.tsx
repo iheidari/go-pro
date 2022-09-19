@@ -1,7 +1,8 @@
-import React, { Dispatch, useEffect, useState } from "react";
+import React, { Dispatch, useContext, useEffect, useState } from "react";
 import { IVideoActions, IVideoState } from "./reducer";
 import api from "../../api";
 import Button from "../Basic/Button";
+import { AppContext } from "../../context/appContext";
 
 type Props = {
   selectedVideo?: string;
@@ -11,6 +12,7 @@ type Props = {
 
 const Header = ({ selectedVideo, state, dispatch }: Props) => {
   const { autoPlay, gps } = state;
+  const context = useContext(AppContext);
   const [gpsLoading, setGpsLoading] = useState<boolean>(false);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const handleGetGps = async () => {
@@ -27,6 +29,7 @@ const Header = ({ selectedVideo, state, dispatch }: Props) => {
       return alert("Failed: " + response.status);
     }
   };
+
   const onAutoPlayChange = (event: React.FormEvent<HTMLInputElement>) => {
     dispatch({
       type: "setAutoPlay",
@@ -37,7 +40,15 @@ const Header = ({ selectedVideo, state, dispatch }: Props) => {
   const handleDeleteVideo = async () => {
     if (selectedVideo) {
       setDeleteLoading(true);
-      await api.delete(`/video/delete?file=${selectedVideo}`);
+      const response = await api.delete(`/video/delete?file=${selectedVideo}`);
+      if (response.status === 202) {
+        if (context) {
+          const onFinish = () => {
+            context.getFiles();
+          };
+          context.addTask(response.data, onFinish);
+        }
+      }
       setDeleteLoading(false);
     }
   };
