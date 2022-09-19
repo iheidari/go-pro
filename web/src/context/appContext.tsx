@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AppContextProps, ITask, ITasks } from "./type";
 import api from "../api";
 import {
   anyActiveTask,
-  // getJustFinishedTasks,
+  getJustFinishedTasks,
   isEqualeTasks,
+  transferOnFinished,
 } from "../util/tasks";
 
 interface AppContextProviderProps {
@@ -16,39 +17,46 @@ export const AppContext = React.createContext<AppContextProps | null>(null);
 let intervalID: null | NodeJS.Timer = null;
 
 export const AppContextProvider = ({ children }: AppContextProviderProps) => {
-  const [tasks, setTasks] = React.useState<ITasks>({});
+  const [tasks, setTasks] = React.useState<ITasks>([]);
+  const [timerOn, setTimerOn] = React.useState<boolean>(false);
 
-  const startTimer = () => {
-    intervalID = setInterval(async () => {
-      const result = await api.get("/task");
-      let finalTasks = { ...tasks };
-      if (result.status === 200) {
-        finalTasks = result.data;
-        if (!isEqualeTasks(finalTasks, tasks)) {
+  useEffect(() => {
+    if (timerOn && !intervalID) {
+      intervalID = setInterval(async () => {
+        const result = await api.get("/task");
+        let finalTasks = [...tasks];
+        if (result.status === 200 && !isEqualeTasks(result.data, tasks)) {
+          finalTasks = transferOnFinished(tasks, result.data);
           setTasks(finalTasks);
-          // const justFinishedList = getJustFinishedTasks(tasks, finalTasks);
-          // for (let key in justFinishedList) {
-          //   if (typeof justFinishedList[key].onFinish === "function") {
-          //     justFinishedList[key].onFinish();
-          //   }
-          // }
+          const justFinishedList = getJustFinishedTasks(tasks, finalTasks);
+          justFinishedList.forEach((finishedTask) => {
+            if (finishedTask.onFinish) {
+              finishedTask.onFinish();
+            }
+          });
         }
-      }
-      if (!anyActiveTask(finalTasks)) {
-        if (intervalID) {
-          clearInterval(intervalID);
+        if (!anyActiveTask(finalTasks)) {
+          if (intervalID) {
+            clearInterval(intervalID);
+          }
         }
+      }, 1000);
+    }
+    return () => {
+      if (intervalID) {
+        clearInterval(intervalID);
+        intervalID = null;
       }
-    }, 1000);
+    };
+  }, [timerOn, tasks]);
+
+  const addTask = (task: ITask): ITasks => {
+    const newTasks = [...tasks, task];
+    setTasks(newTasks);
+    setTimerOn(true);
+    return tasks;
   };
 
-  const addTask = (id: number, onFinish?: () => void): ITasks => {
-    const newTask: ITask = { status: "started", onFinish };
-    const newTasks = { ...tasks, [id]: newTask };
-    setTasks(newTasks);
-    startTimer();
-    return newTasks;
-  };
   const context = { tasks, addTask };
   return <AppContext.Provider value={context}>{children}</AppContext.Provider>;
 };

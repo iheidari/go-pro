@@ -1,13 +1,12 @@
-export interface ITasks {
-  [id: number]: ITask;
-}
+export type ITasks = ITask[];
 export interface ITask {
+  id: number;
   status: "started" | "finished" | "error";
-  name?: string;
+  name: string;
   onFinish?: () => void;
 }
 
 export interface AppContextProps {
   tasks: ITasks;
-  addTask: (id: number, onFinish?: () => void) => ITasks;
+  addTask: (task: ITask) => ITasks;
 }

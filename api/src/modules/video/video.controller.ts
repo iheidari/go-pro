@@ -58,12 +58,12 @@ export class VideoController {
     @Res() res: Response,
   ) {
     console.log(`Post:video/merge, file=${files.length}`);
-    const operationId = this.videoService.mergeVideos(
+    const task = this.videoService.mergeVideos(
       files,
       outputFileName,
       this.taskService,
     );
-    return res.status(HttpStatus.ACCEPTED).json({ operationId });
+    return res.status(HttpStatus.ACCEPTED).json(task);
   }
 
   @Delete('/delete')
