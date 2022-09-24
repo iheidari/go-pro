@@ -2,11 +2,12 @@ import { ITask } from "../../context/type";
 import Error from "../Icons/Error";
 import Loading from "../Icons/Loading";
 import Success from "../Icons/Success";
+import "./animation.css";
 
 function getIcon(task: ITask) {
   switch (task.status) {
     case "started":
-      return <Loading />;
+      return <Loading className="rotating" />;
     case "error":
       return <Error />;
     case "finished":

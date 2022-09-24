@@ -1,6 +1,11 @@
-const Loading = () => {
+const Loading = ({ className }: { className?: string }) => {
   return (
-    <svg width="100%" height="100%" viewBox="0 0 392.138 392.138">
+    <svg
+      width="100%"
+      height="100%"
+      className={className}
+      viewBox="0 0 392.138 392.138"
+    >
       <g>
         <path
           style={{ fill: "#2488FF" }}

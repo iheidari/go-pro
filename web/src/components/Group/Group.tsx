@@ -30,6 +30,11 @@ const Group = ({ selectedVideo, onFileSelected }: GroupProps) => {
     );
   };
 
+  const handleGroupClear = () => {
+    setGroupFiles([]);
+    setMergeFileName("");
+  };
+
   const handleUp = (file: string) => {
     const index = groupFiles.indexOf(file);
     if (index > 0) {
@@ -79,6 +84,13 @@ const Group = ({ selectedVideo, onFileSelected }: GroupProps) => {
             handleGroupRemove(selectedFile);
             setSelectedFile(undefined);
           }
+        }}
+      />
+      <Button
+        label="×"
+        onClick={() => {
+          handleGroupClear();
+          setSelectedFile(undefined);
         }}
       />
     </div>

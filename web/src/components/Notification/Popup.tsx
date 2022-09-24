@@ -16,7 +16,7 @@ const Popup = ({ tasks }: Props) => {
     );
   });
   return (
-    <div className={`float-right w-52 bg-white text-slate-900 rounded`}>
+    <div className={`float-right w-96 bg-white text-slate-900 rounded`}>
       {Rows}
     </div>
   );
